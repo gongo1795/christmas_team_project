@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎄 메리 크리스마스</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Hahmlet:wght@100..900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div id="snow-container" class="snow-container"></div> 
+
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><a href="index.html">Happy Christmas</a></div>
+            <nav class="nav-links">
+                <a href="index.html">메인</a>
+                <a href="letter.html">편지 보내기</a>
+                <a href="tree-decorator.html">트리 꾸미기</a>
+                <a href="minigame.html">미니게임</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="hero-section">
+            <div class="hero-text">
+            <div id="countdown-timer" class="countdown-timer">D-Day</div> 
+            
+            <h1>Merry christmas</h1>
+            
+            <p>당신의 소원을 빌고, 트리를 장식하며 따뜻한 겨울을 준비하세요!</p>
+            <div class="hero-actions">
+                </div>
+        </div>
+        </section>
+
+        <section class="feature-cards">
+            <article class="card">
+                <h2>💌 산타에게 편지 보내기</h2>
+                <p>가장 소중한 사람에게, 혹은 마음속 깊이 간직했던 소원을 산타에게 전달하세요.</p>
+                <a href="letter.html" class="button-red">Go to Letter Page</a>
+            </article>
+            
+            <article class="card">
+                <h2>🌲 나만의 트리 꾸미기</h2>
+                <p>다양한 장식과 빛으로 당신의 웹 트리를 화려하게 완성하고 저장하세요!</p>
+                <a href="tree-decorator.html" class="button-green">Go to Decorator</a>
+            </article>
+            
+            <article class="card">
+                <h2>🕹️ 크리스마스 미니게임</h2>
+                <p>선물 잡기, 눈 피하기 등 재미있는 게임을 즐기고 포인트를 모아보세요!</p>
+                <a href="minigame.html" class="button-red">Go to Mini-Games</a>
+            </article>
+        </section>
+    </main>
+
+    <audio id="christmas-carol" src="assets/audio/carol.mp3" loop></audio> 
+    <button id="music-toggle" class="music-toggle-button">🎶</button>
+    
+    <button id="snow-toggle">❄️</button> 
+
+    <script src="js/script.js"></script>
+</body>
+</html>

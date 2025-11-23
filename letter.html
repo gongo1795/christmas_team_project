@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎄 편지 보내기</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Hahmlet:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/letter.css"> 
+
+    <script type="text/javascript" src="https://cdn.emailjs.com/sdk/2.3.2/email.min.js"></script>
+    <script type="text/javascript">
+        emailjs.init("2Ias9NrCsWHi0AP_0"); 
+    </script>
+</head>
+<body>
+    <div id="snow-container" class="snow-container"></div> 
+
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><a href="index.html">Happy Christmas</a></div>
+            <nav class="nav-links">
+                <a href="index.html">메인</a>
+                <a href="letter.html">편지 보내기</a>
+                <a href="tree-decorator.html">트리 꾸미기</a>
+                <a href="minigame.html">미니게임</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="letter-main">
+        <div class="letter-container">
+            <h1>💌 마음을 담아 편지를 보내세요</h1>
+            <p class="subtitle">모든 필드를 작성하고 산타에게 소원을 전달하세요.</p>
+            
+            <form id="letter-form">
+                <div class="form-group">
+                    <label for="to_email">받는 사람 이메일:</label>
+                    <input type="email" id="to_email" name="to_email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="from_name">보내는 사람 이름:</label>
+                    <input type="text" id="from_name" name="from_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="subject">제목:</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">편지 내용:</label>
+                    <textarea id="message" name="message" rows="10" required></textarea>
+                </div>
+                
+                <button type="submit" class="button-red">편지 전송하기 📮</button>
+                <p id="feedback" class="feedback-message"></p>
+            </form>
+        </div>
+    </main>
+
+    <audio id="christmas-carol" src="assets/audio/carol.mp3" loop></audio> 
+    <button id="music-toggle" class="music-toggle-button">🎶</button>
+    
+    <button id="snow-toggle">❄️</button> 
+
+    <script src="js/letter.js"></script>
+    <script src="js/script.js"></script> </body>
+</html>

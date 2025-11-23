@@ -1,0 +1,91 @@
+/* --- 편지 보내기 페이지 전용 스타일 --- */
+
+.letter-main {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    background-color: var(--color-dark-brown-background); /* 다른 페이지와 동일한 변수 사용 */
+}
+
+.letter-container {
+    width: 100%;
+    max-width: 700px;
+    background-color: #FFF;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px #2C1D1D; /* 입체감 */
+    border: 3px solid var(--color-red-christmas); /* 크리스마스 테두리 */
+}
+
+/* h1 스타일: Bangers 폰트 적용 */
+.letter-container h1 {
+    text-align: center;
+    color: var(--color-black-text);
+    margin-bottom: 10px;
+    
+    /* Bangers 폰트 적용 (이전 단계에서 설정한 변수 사용) */
+    font-family: var(--font-bangers); 
+}
+
+.subtitle {
+    text-align: center;
+    color: var(--color-green-christmas);
+    margin-bottom: 30px;
+    font-style: italic;
+}
+
+/* 폼 스타일 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--color-black-text);
+}
+
+input[type="text"], input[type="email"], textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+    background-color: #fff;
+    /* Hahmlet 폰트가 적용되도록 font-family를 지정하지 않습니다.
+       (style.css의 body/--font-primary를 따릅니다.) */
+}
+
+input:focus, textarea:focus {
+    border-color: var(--color-red-christmas); /* 포커스 시 빨간색 */
+    outline: none;
+    box-shadow: 0 0 5px rgba(192, 57, 43, 0.5);
+}
+
+textarea {
+    resize: vertical;
+}
+
+.letter-container .button-red {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1em;
+    margin-top: 15px;
+}
+
+/* 피드백 메시지 */
+.feedback-message {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.feedback-success {
+    color: var(--color-green-christmas);
+}
+
+.feedback-error {
+    color: var(--color-red-christmas);
+}

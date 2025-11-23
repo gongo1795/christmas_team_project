@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎄 트리 꾸미기</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Hahmlet:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/tree.css">
+</head>
+<body>
+    <div id="snow-container" class="snow-container"></div>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><a href="index.html">Happy Christmas</a></div>
+            <nav class="nav-links">
+                <a href="index.html">메인</a>
+                <a href="letter.html">편지 보내기</a>
+                <a href="tree-decorator.html">트리 꾸미기</a>
+                <a href="minigame.html">미니게임</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="tree-main">
+        <h1>나만의 크리스마스 트리를 꾸며보세요!</h1>
+        
+        <div class="decorator-container">
+            <aside class="ornament-palette">
+                <h2>장식 목록</h2>
+                <div class="ornaments-list">
+                    <div class="ornament ball-red" draggable="true" data-type="ball-red"></div>
+                    <div class="ornament ball-green" draggable="true" data-type="ball-green"></div>
+                    <div class="ornament star-gold" draggable="true" data-type="star-gold"></div>
+                    <div class="ornament candy-cane" draggable="true" data-type="candy-cane"></div>
+                    <div class="ornament gift-box" draggable="true" data-type="gift-box"></div>
+                    <div class="ornament memo-note" draggable="true" data-type="memo-note"></div>
+                </div>
+                <button id="reset-button" class="button-red">모두 지우기</button>
+            </aside>
+            
+            <section id="tree-area" class="tree-area">
+                <div class="main-tree"></div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- 메모 입력 모달 -->
+    <div id="input-modal" class="modal">
+        <div class="modal-content">
+            <span id="close-input-modal" class="close-button">&times;</span>
+            <h2>메모 남기기 ✏️</h2>
+            <form id="memo-input-form">
+                <textarea id="input-memo-text" placeholder="여기에 메모를 입력하세요..."></textarea>
+                <button type="submit" class="button-green">메모 저장</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 메모 보기 모달 -->
+    <div id="view-modal" class="modal">
+        <div class="modal-content">
+            <span id="close-view-modal" class="close-button">&times;</span>
+            <h2>작성된 메모 💌</h2>
+            <p id="view-memo-text"></p>
+        </div>
+    </div>
+
+    <audio id="christmas-carol" src="assets/audio/carol.mp3" loop></audio> 
+    <button id="music-toggle" class="music-toggle-button">🎶</button>
+
+    <button id="snow-toggle">❄️</button> 
+
+    <script src="js/tree.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

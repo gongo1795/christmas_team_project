@@ -1,0 +1,124 @@
+/* --- 메인 페이지 전용 스타일 --- */
+
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 1. 히어로 섹션 */
+.hero-section {
+    position: relative;
+    background-color: var(--color-black-text); 
+    
+    /* 🚨 이 부분을 수정: 절대 경로 대신 상대 경로 사용 */
+    background-image: url('../assets/images/Gemini_Generated_Image_hyblr8hyblr8hybl.png');
+    
+    background-size: cover;        
+    background-position: center;   
+    background-repeat: no-repeat;  
+    color: var(--color-white-snow);
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 10px;
+    margin-bottom: 40px;
+    box-shadow: var(--shadow-light); 
+    
+    z-index: 1; 
+}
+
+/* --- 이미지 어둡게 만드는 오버레이 추가 (가독성 핵심) --- */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* 반투명 검은색 배경 (0.4는 투명도. 이 숫자를 조절해서 밝기를 바꿀 수 있습니다) */
+    background-color: rgba(0, 0, 0, 0.4); 
+    border-radius: 10px;
+    z-index: 1; /* 오버레이는 이미지 위에, 텍스트 아래에 위치 */
+}
+
+/* 텍스트 컨테이너 (.hero-text)에 z-index 설정 */
+.hero-text {
+    position: relative; /* z-index를 적용하려면 position 속성이 필요합니다. */
+    z-index: 2; /* 오버레이보다 높게 설정하여 텍스트가 앞에 보이게 함 */
+}
+
+.hero-text h1 {
+    font-size: 3em;
+    color: var(--color-gold-accent); 
+    margin-bottom: 10px;
+    /* 👈 텍스트 그림자를 더 진하게 하여 대비 강화 */
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.9), 2px 2px var(--color-red-christmas); 
+}
+
+.hero-text p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+.hero-actions a {
+    margin: 0 10px;
+}
+
+/* NEW: D-Day 카운터 스타일 */
+.countdown-timer { 
+    /* 폰트를 한글 폰트(Hahmlet)로 변경하고 크기를 줄입니다. */
+    font-family: var(--font-primary); /* Hahmlet 폰트 적용 */
+    font-size: 1.5em; /* 크기 축소 */
+    font-weight: 700;
+    
+    color: var(--color-white-snow); /* 흰색 글씨로 변경 */
+    
+    /* ⚠️ 배경색, 패딩, 박스 그림자 제거 */
+    background-color: transparent; 
+    padding: 0;
+    box-shadow: none; 
+    
+    margin: 0 auto 10px auto; /* h1 위에 위치하도록 하단 마진 추가 */
+    display: block; /* 블록 요소로 변경하여 중앙 정렬 유지 */
+    text-align: center;
+    line-height: 1.4;
+    
+    /* ✨ 가독성을 위한 진한 텍스트 그림자 추가 */
+    text-shadow: 0 0 5px #000000, 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+/* 2. 기능 카드 섹션 */
+.feature-cards {
+    display: flex;
+    justify-content: space-around;
+    gap: 30px;
+    padding: 20px 0;
+}
+
+.card {
+    flex: 1;
+    background-color: #FFFFFF;
+    color: var(--color-black-text); /* 👈 이 라인을 추가합니다. */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-light);
+    text-align: center;
+    min-width: 300px;
+    transition: transform 0.3s;
+}
+
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card h2 {
+    color: var(--color-green-christmas);
+    border-bottom: 2px dashed var(--color-red-christmas);
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+

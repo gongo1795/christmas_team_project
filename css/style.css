@@ -1,0 +1,186 @@
+:root {
+    /* 색상 팔레트 (사용자 정의) */
+    --color-white-snow: #F0F0F0;
+    --color-dark-brown-background: #2C1D1D; 
+    --color-black-text: #1A1A1A; 
+    --color-red-christmas: #72130F; 
+    --color-green-christmas: #3a5a4a;
+    --color-gold-accent: #B07B2D; 
+    --color-button-dark-red: #72130F; 
+    --shadow-light: 0 4px 10px rgba(0, 0, 0, 0.2);
+
+    /* 폰트 설정 */
+    --font-bangers: 'Bangers', cursive;
+    --font-hahmlet: 'Hahmlet', serif; 
+    --font-primary: var(--font-hahmlet); 
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-dark-brown-background); 
+    color: var(--color-white-snow); 
+    font-family: var(--font-primary);
+    margin: 0;
+    padding-top: 70px; 
+    line-height: 1.6;
+}
+
+/* --- 공통 버튼 스타일 --- */
+.button-red, .button-green {
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.2s;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+}
+
+.button-red {
+    background-color: var(--color-button-dark-red); 
+    color: var(--color-white-snow);
+}
+.button-red:hover {
+    background-color: #5A0F0D;
+    transform: translateY(-2px);
+}
+
+.button-green {
+    background-color: var(--color-green-christmas);
+    color: var(--color-white-snow);
+}
+.button-green:hover {
+    background-color: #2F4738;
+    transform: translateY(-2px);
+}
+
+/* --- 네비게이션 바 스타일 --- */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: var(--color-black-text);
+    box-shadow: var(--shadow-light);
+    z-index: 1000;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 20px;
+}
+
+.nav-logo a {
+    color: var(--color-gold-accent); 
+    font-size: 1.8em;
+    font-weight: 900;
+    text-decoration: none;
+    letter-spacing: 2px;
+    font-family: var(--font-bangers); 
+}
+
+.nav-links a {
+    color: var(--color-white-snow);
+    text-decoration: none;
+    margin-left: 30px;
+    font-size: 1em;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--color-green-christmas);
+}
+
+/* --- 눈 효과 (Snow Effect) 스타일 (FIXED) --- */
+.snow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; 
+    z-index: 999; 
+    overflow: hidden;
+}
+
+.snowflake {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #fff; 
+    border-radius: 50%; 
+    opacity: 0.8;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+    animation: fall linear infinite; 
+}
+
+@keyframes fall {
+    0% {
+        transform: translate3d(0, -100px, 0) rotate(0deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate3d(0, 100vh, 0) rotate(360deg);
+        opacity: 0; 
+    }
+}
+
+/* 5. 눈 토글 버튼 스타일 */
+#snow-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1001; 
+    padding: 10px 15px;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.2em;
+    font-weight: bold;
+    background-color: var(--color-gold-accent);
+    color: var(--color-black-text);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#snow-toggle:hover {
+    background-color: #604d07;
+}
+
+/* 6. 음악 토글 버튼 스타일 (NEW) */
+#music-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 80px; /* 눈 토글 버튼의 왼쪽으로 띄웁니다 */
+    z-index: 1001; 
+    padding: 10px 15px;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.2em;
+    font-weight: bold;
+    background-color: var(--color-green-christmas); 
+    color: var(--color-white-snow);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#music-toggle:hover {
+    background-color: #2F4738; 
+}
