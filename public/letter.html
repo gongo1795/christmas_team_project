@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎄 편지 보내기</title>
+    <title>크리스마스 편지 보내기</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,41 +34,42 @@
 
     <main class="letter-main">
         <div class="letter-container">
-            <h1>💌 마음을 담아 편지를 보내세요</h1>
-            <p class="subtitle">모든 필드를 작성하고 산타에게 소원을 전달하세요.</p>
+            <h1>소중한 사람에게 편지를 보내세요</h1>
+            <p class="subtitle">모든 분께 따뜻한 마음을 전하고, 크리스마스의 설렘을 함께 나눠요.</p>
             
             <form id="letter-form">
                 <div class="form-group">
-                    <label for="to_email">받는 사람 이메일:</label>
+                    <label for="to_email">받는 사람 이메일</label>
                     <input type="email" id="to_email" name="to_email" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="from_name">보내는 사람 이름:</label>
+                    <label for="from_name">보내는 사람 이름</label>
                     <input type="text" id="from_name" name="from_name" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="subject">제목:</label>
+                    <label for="subject">제목</label>
                     <input type="text" id="subject" name="subject" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="message">편지 내용:</label>
+                    <label for="message">편지 내용</label>
                     <textarea id="message" name="message" rows="10" required></textarea>
                 </div>
                 
-                <button type="submit" class="button-red">편지 전송하기 📮</button>
+                <button type="submit" class="button-red">편지 보내기</button>
                 <p id="feedback" class="feedback-message"></p>
             </form>
         </div>
     </main>
 
     <audio id="christmas-carol" src="assets/audio/carol.mp3" loop></audio> 
-    <button id="music-toggle" class="music-toggle-button">🎶</button>
+    <button id="music-toggle" class="music-toggle-button">음악</button>
     
     <button id="snow-toggle">❄️</button> 
 
     <script src="js/letter.js"></script>
-    <script src="js/script.js"></script> </body>
+    <script src="js/script.js"></script>
+</body>
 </html>
