@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>크리스마스 트리 꾸미기</title>
+    <title>🎄 트리 꾸미기</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,7 +28,7 @@
     </header>
 
     <main class="tree-main">
-        <h1>우리만의 크리스마스 트리를 꾸며보세요</h1>
+        <h1>나만의 크리스마스 트리를 꾸며보세요!</h1>
         
         <div class="decorator-container">
             <aside class="ornament-palette">
@@ -54,10 +54,10 @@
     <div id="input-modal" class="modal">
         <div class="modal-content">
             <span id="close-input-modal" class="close-button">&times;</span>
-            <h2>메모 남기기 📝</h2>
+            <h2>메모 남기기 ✏️</h2>
             <form id="memo-input-form">
-                <textarea id="input-memo-text" placeholder="여기에 메모를 입력해주세요.."></textarea>
-                <button type="submit" class="button-green">메모 걸기</button>
+                <textarea id="input-memo-text" placeholder="여기에 메모를 입력하세요..."></textarea>
+                <button type="submit" class="button-green">메모 저장</button>
             </form>
         </div>
     </div>
@@ -66,34 +66,38 @@
     <div id="view-modal" class="modal">
         <div class="modal-content">
             <span id="close-view-modal" class="close-button">&times;</span>
-            <h2>작성한 메모 보기</h2>
+            <h2>작성된 메모 💌</h2>
             <p id="view-memo-text"></p>
         </div>
     </div>
 
     <audio id="christmas-carol" src="assets/audio/carol.mp3" loop></audio> 
-    <button id="music-toggle" class="music-toggle-button">음악</button>
+    <button id="music-toggle" class="music-toggle-button">🎶</button>
 
     <button id="snow-toggle">❄️</button> 
 
-    <!-- Firebase (Firestore) for shared memos -->
-    <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore-compat.js"></script>
-    <script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         const firebaseConfig = {
             apiKey: "AIzaSyBaT3IuQJ9EAWS5Xg5Fr5GkehCNKuCq1To",
             authDomain: "christmastree-dccfb.firebaseapp.com",
             projectId: "christmastree-dccfb",
             storageBucket: "christmastree-dccfb.firebasestorage.app",
             messagingSenderId: "532924420650",
-            appId: "1:532924420650:web:12d6c7e0dd417018a46953"
+            appId: "1:532924420650:web:12d6c7e0dd417018a46953",
+            measurementId: "G-1E0G7ZP1BM"
         };
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        window.db = firebase.firestore();
-        window.firestoreTimestamp = firebase.firestore.FieldValue.serverTimestamp;
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
     </script>
 
     <script src="js/tree.js"></script>
