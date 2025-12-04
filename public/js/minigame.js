@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const randomGiftImg = fallingGiftImgs[Math.floor(Math.random() * fallingGiftImgs.length)];
 
             const gift = {
-                size: Math.random() * 20 + 25, 
+                size: Math.random() * 25 + 30, 
                 x: Math.random() * (canvas.width - 25),
                 y: 0,
                 speed: Math.random() * 1 + 1.5,
