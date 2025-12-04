@@ -68,7 +68,7 @@
 /* 2. 게임 실행 영역 */
 .game-area {
     /* 배경은 기본값으로 유지하거나 제거 */
-    background-color: var(--color-black-text); 
+    background-color: transparent;
     height: 500px; 
     border-radius: 8px;
     
