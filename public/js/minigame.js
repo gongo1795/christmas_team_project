@@ -254,8 +254,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const canvas = document.getElementById('santaDodgeCanvas');
         const ctx = canvas.getContext('2d');
-        const startGameBtn = document.getElementById('startGameBtnDodge');
-        const timeDisplay = document.getElementById('timeDisplay');
+        const startGameBtn = document.getElementById('startGameBtnDodge'); // 이제 찾을 수 있습니다!
+        const timeDisplay = document.getElementById('timeDisplay');         // 이제 찾을 수 있습니다!
         const resultMessage = document.getElementById('resultMessage');
 
         let isGameOver = false;
