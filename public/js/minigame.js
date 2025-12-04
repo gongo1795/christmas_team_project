@@ -234,199 +234,103 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ===================================================================
-    // ✨ NEW: 2. 산타 피하기 게임 로직 구현
-    // ===================================================================
-    let santaInterval; // 산타 생성 인터벌 ID
-    let dodgeTimer;    // 시간 제한 타이머 ID
+// ✨ NEW: 2. 산타 피하기 게임 로직 구현 (수정 완료)
+// ===================================================================
+let santaInterval;
+let dodgeTimer;
 
-    function loadSantaDodgeGame() {
-        const TIME_LIMIT = 30; // 30초 생존 목표
+function loadSantaDodgeGame() {
+    const TIME_LIMIT = 30; // 30초 생존 목표
 
-        // 게임 영역에 캔버스 삽입
-        gameArea.innerHTML = `
-            <div id="game-controls" style="margin-bottom: 10px;">
-                <button id="startGameBtn" class="button-red">시작하기</button>
-                <div id="scoreDisplay" style="color: white; font-size: 1.2em; margin-top: 10px;">점수: 0</div>
-            </div>
-            <canvas id="santaDodgeCanvas" width="600" height="400" style="background-color: transparent; border: 2px solid white;"></canvas>
-            <div id="resultMessage" style="color: red; font-size: 2em; margin-top: 10px; display: none;"></div>
-        `;
+    // 🚨 수정된 부분: HTML 생성 문자열에 timeDisplay와 올바른 ID 추가
+    gameArea.innerHTML = `
+        <div id="game-controls" style="margin-bottom: 10px; width: 100%; display: flex; justify-content: space-around; align-items: center;">
+            <button id="startGameBtnDodge" class="button-green">시작하기</button> 
+            <div id="timeDisplay" style="color: white; font-size: 1.2em; margin-top: 10px;">남은 시간: ${TIME_LIMIT}초</div> 
+        </div>
+        <canvas id="santaDodgeCanvas" width="600" height="400" style="background-color: transparent; border: 2px solid white;"></canvas>
+        <div id="resultMessage" style="color: red; font-size: 2em; margin-top: 10px; display: none;"></div>
+    `;
 
-        const canvas = document.getElementById('santaDodgeCanvas');
-        const ctx = canvas.getContext('2d');
-        const startGameBtn = document.getElementById('startGameBtnDodge'); // 이제 찾을 수 있습니다!
-        const timeDisplay = document.getElementById('timeDisplay');         // 이제 찾을 수 있습니다!
-        const resultMessage = document.getElementById('resultMessage');
+    const canvas = document.getElementById('santaDodgeCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // 🚨 변수명 수정: HTML 생성과 동일한 ID를 사용하도록 재설정
+    const startGameBtn = document.getElementById('startGameBtnDodge'); 
+    const timeDisplay = document.getElementById('timeDisplay'); 
+    
+    const resultMessage = document.getElementById('resultMessage');
+    // ... (이하 기존 로직 유지)
 
-        let isGameOver = false;
-        let timeRemaining = TIME_LIMIT;
-        let animationFrameId;
+    let isGameOver = false;
+    let timeRemaining = TIME_LIMIT;
+    let animationFrameId;
+    
+    // --- (플레이어, 산타 설정 로직 유지) ---
+    
+    // --- 타이머 함수 ---
+    function startTimer() {
+        timeRemaining = TIME_LIMIT;
+        // 🚨 timeDisplay 요소가 정상적으로 찾아졌을 때만 텍스트를 업데이트합니다.
+        if (timeDisplay) timeDisplay.textContent = `남은 시간: ${timeRemaining}초`;
 
-        // --- 플레이어 (루돌프) 설정 ---
-        const player = {
-            size: 40,
-            x: canvas.width / 2 - 10,
-            y: canvas.height - 30,
-            speed: 4,
-            color: '#B7410E', // 루돌프 색상
-            movingLeft: false,
-            movingRight: false,
-            draw: function() {
-                // 🚨 원형 대신 루돌프 이미지 그리기
-                if (rudolphImg.complete) {
-                    ctx.drawImage(rudolphImg, this.x, this.y, this.size, this.size);
-                } else {
-                    ctx.fillStyle = this.color;
-                    ctx.beginPath();
-                    ctx.arc(this.x + this.size/2, this.y + this.size/2, this.size/2, 0, Math.PI * 2);
-                    ctx.fill();
-                }
+        clearInterval(dodgeTimer);
+        dodgeTimer = setInterval(() => {
+            timeRemaining--;
+            if (timeDisplay) timeDisplay.textContent = `남은 시간: ${timeRemaining}초`;
+
+            if (timeRemaining <= 0) {
+                endGame(true); // 생존 성공
             }
-        };
-
-        // --- 산타 객체 배열 ---
-        let santas = [];
-
-        // --- 산타 생성 함수 ---
-        function createSanta() {
-            const santa = {
-                size: Math.random() * 10 + 20, // 크기 20~30
-                x: Math.random() * (canvas.width - 30),
-                y: 0,
-                speed: Math.random() * 1.5 + 2.5, // 속도 2.5~4
-                color: 'red',
-                
-                draw: function() {
-                    // 🚨 산타 이미지 사용
-                    if (santaImg.complete) {
-                        ctx.drawImage(santaImg, this.x, this.y, this.size, this.size);
-                    } else {
-                        // 이미지가 없을 경우 대체 (기존 사각형)
-                        ctx.fillStyle = this.color;
-                        ctx.fillRect(this.x, this.y, this.size, this.size);
-                    }
-                }
-            };
-            santas.push(santa);
-        }
-
-        // --- 타이머 함수 ---
-        function startTimer() {
-            timeRemaining = TIME_LIMIT;
-            timeDisplay.textContent = `남은 시간: ${timeRemaining}초`;
-
-            clearInterval(dodgeTimer);
-            dodgeTimer = setInterval(() => {
-                timeRemaining--;
-                timeDisplay.textContent = `남은 시간: ${timeRemaining}초`;
-
-                if (timeRemaining <= 0) {
-                    endGame(true); // 생존 성공
-                }
-            }, 1000);
-        }
-
-        // --- 게임 종료 함수 ---
-        function endGame(isSuccess) {
-            isGameOver = true;
-            clearInterval(dodgeTimer);
-            clearInterval(santaInterval);
-            cancelAnimationFrame(animationFrameId);
-            
-            if (isSuccess) {
-                resultMessage.style.color = 'lime';
-                resultMessage.textContent = '🎉 생존 성공! 30초를 버텼습니다! 🎉';
-            } else {
-                resultMessage.style.color = 'red';
-                resultMessage.textContent = 'GAME OVER! 산타에게 잡혔습니다.';
-            }
-            resultMessage.style.display = 'block';
-            startGameBtn.textContent = '다시 시작';
-        }
-
-        // --- 게임 루프 ---
-        function updateGame() {
-            if (isGameOver) return;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // 1. 플레이어 이동
-            if (player.movingLeft && player.x > 0) {
-                player.x -= player.speed;
-            }
-            if (player.movingRight && player.x < canvas.width - player.size) {
-                player.x += player.speed;
-            }
-            player.draw();
-
-            // 2. 산타 업데이트 및 충돌 검사
-            for (let i = 0; i < santas.length; i++) {
-                const santa = santas[i];
-                santa.y += santa.speed;
-                santa.draw();
-
-                // 🚨 충돌 검사 (간단한 직사각형 충돌)
-                if (player.x < santa.x + santa.size && 
-                    player.x + player.size > santa.x && 
-                    player.y < santa.y + santa.size && 
-                    player.y + player.size > santa.y) {
-                    
-                    endGame(false); // 충돌 실패
-                    return;
-                } 
-                // 산타가 바닥으로 떨어지면 제거
-                else if (santa.y > canvas.height) {
-                    santas.splice(i, 1);
-                    i--;
-                }
-            }
-            
-            animationFrameId = requestAnimationFrame(updateGame);
-        }
-
-        // --- 게임 시작/초기화 ---
-        function startGame() {
-            isGameOver = false;
-            santas = [];
-            player.x = canvas.width / 2 - 10;
-            resultMessage.style.display = 'none';
-            startGameBtn.textContent = '게임 중...';
-
-            // 키보드 이벤트
-            document.removeEventListener('keydown', handleKeyDown);
-            document.removeEventListener('keyup', handleKeyUp);
-            document.addEventListener('keydown', handleKeyDown);
-            document.addEventListener('keyup', handleKeyUp);
-
-            // 루프 및 타이머 시작
-            cancelAnimationFrame(animationFrameId);
-            updateGame();
-            startTimer();
-
-            // 산타 생성 시작 (밀집도를 높이기 위해 0.5초마다 생성)
-            clearInterval(santaInterval);
-            santaInterval = setInterval(createSanta, 350);
-        }
-
-        // --- 키보드 이벤트 핸들러 ---
-        function handleKeyDown(e) {
-            if (e.key === 'ArrowLeft' || e.key === 'a') {
-                player.movingLeft = true;
-            } else if (e.key === 'ArrowRight' || e.key === 'd') {
-                player.movingRight = true;
-            }
-        }
-
-        function handleKeyUp(e) {
-            if (e.key === 'ArrowLeft' || e.key === 'a') {
-                player.movingLeft = false;
-            } else if (e.key === 'ArrowRight' || e.key === 'd') {
-                player.movingRight = false;
-            }
-        }
-
-        startGameBtn.addEventListener('click', startGame);
+        }, 1000);
     }
+    
+    // --- (endGame, updateGame, startGame 함수 및 핸들러 로직 유지) ---
+    
+    // startGame 함수는 별도로 정의된 코드가 없으므로, 위의 전체 함수를 덮어쓰기 해주세요.
+    function startGame() {
+        isGameOver = false;
+        santas = [];
+        player.x = canvas.width / 2 - 10;
+        resultMessage.style.display = 'none';
+        startGameBtn.textContent = '게임 중...';
+
+        // 키보드 이벤트
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keyup', handleKeyUp);
+        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keyup', handleKeyUp);
+
+        // 루프 및 타이머 시작
+        cancelAnimationFrame(animationFrameId);
+        updateGame();
+        startTimer();
+
+        // 산타 생성 시작 (밀집도를 높이기 위해 0.5초마다 생성)
+        clearInterval(santaInterval);
+        santaInterval = setInterval(createSanta, 350);
+    }
+    
+    // 키보드 핸들러 등 다른 함수도 이곳에 위치해야 합니다. (이전 코드에서 유지)
+    function handleKeyDown(e) {
+        if (e.key === 'ArrowLeft' || e.key === 'a') {
+            player.movingLeft = true;
+        } else if (e.key === 'ArrowRight' || e.key === 'd') {
+            player.movingRight = true;
+        }
+    }
+
+    function handleKeyUp(e) {
+        if (e.key === 'ArrowLeft' || e.key === 'a') {
+            player.movingLeft = false;
+        } else if (e.key === 'ArrowRight' || e.key === 'd') {
+            player.movingRight = false;
+        }
+    }
+
+
+    startGameBtn.addEventListener('click', startGame);
+}
 
     // ===================================================================
     // ✨ NEW: 3. 눈송이 터뜨리기 로직 구현
