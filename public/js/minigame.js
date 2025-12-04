@@ -244,9 +244,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- 플레이어 (루돌프) 설정 ---
         const player = {
-            size: 40,
-            x: canvas.width / 2 - 10,
-            y: canvas.height - 30,
+            size: 50,
+            x: canvas.width / 2 - 25,
+            y: canvas.height - 40,
             speed: 4,
             color: '#B7410E',
             movingLeft: false,
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- 산타 생성 함수 ---
         function createSanta() {
             const santa = {
-                size: Math.random() * 10 + 20,
+                size: Math.random() * 15 + 25,
                 x: Math.random() * (canvas.width - 30),
                 y: 0,
                 speed: Math.random() * 1.5 + 2.5,
