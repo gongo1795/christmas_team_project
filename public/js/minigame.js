@@ -1,25 +1,25 @@
 const giftBasketImg = new Image();
-giftBasketImg.src = 'assets/images/basket.png'; // 🎁 바구니 이미지
+giftBasketImg.src = '../assets/images/basket.png'; // 🎁 (경로 수정: ../ 추가)
 
 const santaImg = new Image();
-santaImg.src = 'assets/images/santa.png'; // 🎅 산타 이미지
+santaImg.src = '../assets/images/santa.png'; // 🎅 (경로 수정: ../ 추가)
 
 const rudolphImg = new Image();
-rudolphImg.src = 'assets/images/rudolph.png'; // 🦌 루돌프 이미지
+rudolphImg.src = '../assets/images/rudolph.png'; // 🦌 (경로 수정: ../ 추가)
 
 const GIFT_IMAGE_SOURCES = [
-    'assets/images/gift_red.png',    // 1번 선물
-    'assets/images/gift_blue.png',   // 2번 선물
-    'assets/images/gift_green.png',  // 3번 선물
-]; // 🎁 떨어지는 선물 이미지
+    '../assets/images/gift_red.png',    // 1번 선물 (경로 수정: ../ 추가)
+    '../assets/images/gift_blue.png',   // 2번 선물 (경로 수정: ../ 추가)
+    '../assets/images/gift_green.png',  // 3번 선물 (경로 수정: ../ 추가)
+]; 
 
 const fallingGiftImgs = [];
 GIFT_IMAGE_SOURCES.forEach(src => {
     const img = new Image();
-    img.src = src;
+    // img.src에 ../가 포함된 경로가 할당됩니다.
+    img.src = src; 
     fallingGiftImgs.push(img);
 })
-
 
 document.addEventListener('DOMContentLoaded', () => {
     const gameSelection = document.querySelector('.game-selection');
