@@ -12,7 +12,7 @@
     background-color: var(--color-black-text); 
     
     /* 🚨 이 부분을 수정: 절대 경로 대신 상대 경로 사용 */
-    background-image: url('../assets/images/Gemini_Generated_Image_hyblr8hyblr8hybl.png');
+    background-image: url('../assets/images/gemini.png');
     
     background-size: cover;        
     background-position: center;   
