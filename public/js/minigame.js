@@ -1,16 +1,16 @@
 const giftBasketImg = new Image();
-giftBasketImg.src = '/assets/images/basket.png'; // 🎁 (경로 수정: ../ 추가)
+giftBasketImg.src = '../assets/images/basket.png'; // 🎁 (경로 수정: ../ 추가)
 
 const santaImg = new Image();
-santaImg.src = '/assets/images/santa.png'; // 🎅 (경로 수정: ../ 추가)
+santaImg.src = '../assets/images/santa.png'; // 🎅 (경로 수정: ../ 추가)
 
 const rudolphImg = new Image();
-rudolphImg.src = '/assets/images/rudolph.png'; // 🦌 (경로 수정: ../ 추가)
+rudolphImg.src = '../assets/images/rudolph.png'; // 🦌 (경로 수정: ../ 추가)
 
 const GIFT_IMAGE_SOURCES = [
-    '/assets/images/gift_red.png',    // 1번 선물 (경로 수정: ../ 추가)
-    '/assets/images/gift_blue.png',   // 2번 선물 (경로 수정: ../ 추가)
-    '/assets/images//gift_green.png',  // 3번 선물 (경로 수정: ../ 추가)
+    '../assets/images/gift_red.png',    // 1번 선물 (경로 수정: ../ 추가)
+    '../assets/images/gift_blue.png',   // 2번 선물 (경로 수정: ../ 추가)
+    '../assets/images/gift_green.png',  // 3번 선물 (경로 수정: ../ 추가)
 ]; 
 
 const fallingGiftImgs = [];
@@ -60,11 +60,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadFallingGiftsGame() {
         // ... (기존 Falling Gifts 게임 로직 유지) ...
         gameArea.innerHTML = `
-            <div id="game-controls">
-                </div>
-            <canvas id="fallingGiftsCanvas" width="600" height="400" style="background-color: transparent; border: 2px solid white; margin-top: 10px;"></canvas>
-            <div id="gameOverMessage" style="color: red; font-size: 2em; display: none;">GAME OVER!</div>
-        `;
+        <div id="game-controls">
+            <button id="startGameBtn" class="button-red">시작하기</button>
+            <div id="scoreDisplay" style="color: white; font-size: 1.2em; margin-top: 10px;">점수: 0</div>
+        </div>
+        <canvas id="fallingGiftsCanvas" width="600" height="400" style="background-color: transparent; border: 2px solid white; margin-top: 10px;"></canvas>
+        <div id="gameOverMessage" style="color: red; font-size: 2em; display: none;">GAME OVER!</div>
+    `;
         
         const canvas = document.getElementById('fallingGiftsCanvas');
         const ctx = canvas.getContext('2d');
