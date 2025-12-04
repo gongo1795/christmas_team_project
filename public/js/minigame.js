@@ -1,16 +1,16 @@
 const giftBasketImg = new Image();
-giftBasketImg.src = '../assets/images/basket.png'; // 🎁 (경로 수정: ../ 추가)
+giftBasketImg.src = '/assets/images/basket.png'; // 🎁 (경로 수정: ../ 추가)
 
 const santaImg = new Image();
-santaImg.src = '../assets/images/santa.png'; // 🎅 (경로 수정: ../ 추가)
+santaImg.src = '/assets/images/santa.png'; // 🎅 (경로 수정: ../ 추가)
 
 const rudolphImg = new Image();
-rudolphImg.src = '../assets/images/rudolph.png'; // 🦌 (경로 수정: ../ 추가)
+rudolphImg.src = '/assets/images/rudolph.png'; // 🦌 (경로 수정: ../ 추가)
 
 const GIFT_IMAGE_SOURCES = [
-    '../assets/images/gift_red.png',    // 1번 선물 (경로 수정: ../ 추가)
-    '../assets/images/gift_blue.png',   // 2번 선물 (경로 수정: ../ 추가)
-    '../assets/images/gift_green.png',  // 3번 선물 (경로 수정: ../ 추가)
+    '/assets/images/gift_red.png',    // 1번 선물 (경로 수정: ../ 추가)
+    '/assets/images/gift_blue.png',   // 2번 선물 (경로 수정: ../ 추가)
+    '/assets/images//gift_green.png',  // 3번 선물 (경로 수정: ../ 추가)
 ]; 
 
 const fallingGiftImgs = [];
