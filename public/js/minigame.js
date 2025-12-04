@@ -78,10 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // --- 플레이어 (바구니) 설정 ---
         const player = {
-            width: 60,
-            height: 10,
-            x: canvas.width / 2 - 30,
-            y: canvas.height - 20,
+            width: 90,
+            height: 30,
+            x: canvas.width / 2 - 45,
+            y: canvas.height - 50,
             speed: 5,
             color: 'brown',
             movingLeft: false,
