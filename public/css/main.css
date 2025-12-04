@@ -96,10 +96,13 @@
     justify-content: space-around;
     gap: 30px;
     padding: 20px 0;
+    /* 🚨 필수 추가: 화면이 좁아지면 카드가 아래로 내려가도록 설정 */
+    flex-wrap: wrap;
 }
 
 .card {
-    flex: 1;
+    flex: 1 1 300px; /* 최소 300px을 유지하고 공간이 남으면 늘어남 */
+    min-width: 300px;
     background-color: #FFFFFF;
     color: var(--color-black-text); /* 👈 이 라인을 추가합니다. */
     padding: 30px;
@@ -122,3 +125,26 @@
     margin-bottom: 15px;
 }
 
+/* 🚨 미디어 쿼리 추가: 태블릿/모바일 (768px 이하) */
+@media (max-width: 768px) {
+    .feature-cards {
+        flex-direction: column; /* 카드를 수직으로 배열 */
+        gap: 20px;
+    }
+    
+    .card {
+        width: 100%; /* 너비를 꽉 채우도록 설정 */
+        min-width: 0; /* min-width 제한 해제 */
+    }
+    
+    /* 히어로 섹션 높이와 텍스트 크기 조정 */
+    .hero-section {
+        height: 300px; 
+    }
+    .hero-text h1 {
+        font-size: 2.5em;
+    }
+    .hero-text p {
+        font-size: 1em;
+    }
+}
