@@ -67,29 +67,29 @@
 
 /* 2. 게임 실행 영역 */
 .game-area {
+    /* 배경은 기본값으로 유지하거나 제거 */
     background-color: var(--color-black-text); 
-    height: 500px; /* 게임 캔버스 크기 */
+    height: 500px; 
     border-radius: 8px;
+    
+    /* 두 번째 정의에서 가져옴 */
     display: flex;
+    flex-direction: column; /* 컨트롤과 캔버스가 수직으로 배치 */
     justify-content: center;
     align-items: center;
+
     color: var(--color-white-snow);
     font-size: 1.5em;
-    border: 5px solid var(--color-red-christmas); /* 빨간색 실선 */
-}
-
-/* --- minigame.css 추가: 눈송이 터뜨리기 게임의 컨테이너를 위한 스타일 --- */
-
-/* 게임 영역 크기 및 위치 조정을 위해 game-area 내부의 flex 속성 변경 */
-.game-area {
-    background-color: var(--color-black-text); 
-    height: 500px;
-    border-radius: 8px;
-    /* 기존: display: flex, justify-content: center, align-items: center */
-    flex-direction: column; /* 컨트롤과 캔버스가 수직으로 배치되도록 변경 */
     padding: 20px;
-    border: 5px dashed var(--color-gold-accent);
+    
+    /* 두 번째 정의에서 가져옴 */
+    border: 5px dashed var(--color-gold-accent); /* 최종 테두리 선택 */
+    
+    /* --- 배경 이미지 설정이 작동하도록 배경 속성을 초기화 또는 제거 --- */
+    background-size: cover; /* 동적 배경 클래스에 이미 정의되어 있어야 합니다. */
+    background-position: center;
 }
+
 
 /* 🎁 선물 잡기 게임 배경 */
 .game-area.falling-gifts-bg {
