@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- 산타 생성 함수 ---
         function createSanta() {
             const santa = {
-                size: Math.random() * 20 + 30,
+                size: Math.random() * 15 + 25,
                 x: Math.random() * (canvas.width - 30),
                 y: 0,
                 speed: Math.random() * 1.5 + 2.5,
