@@ -245,7 +245,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // 게임 영역에 캔버스 삽입
         gameArea.innerHTML = `
             <div id="game-controls" style="margin-bottom: 10px;">
-                </div>
+                <button id="startGameBtn" class="button-red">시작하기</button>
+                <div id="scoreDisplay" style="color: white; font-size: 1.2em; margin-top: 10px;">점수: 0</div>
+            </div>
             <canvas id="santaDodgeCanvas" width="600" height="400" style="background-color: transparent; border: 2px solid white;"></canvas>
             <div id="resultMessage" style="color: red; font-size: 2em; margin-top: 10px; display: none;"></div>
         `;
