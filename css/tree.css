@@ -193,3 +193,32 @@
 .ornament[data-memo]:hover {
     transform: scale(1.15); 
 }
+
+/* tree.css 파일 */
+
+/* decorator-container에 대한 미디어 쿼리 추가 */
+@media (max-width: 768px) {
+    .decorator-container {
+        flex-direction: column; /* 가로 배열 -> 세로 배열로 변경 */
+        gap: 20px;
+    }
+    
+    /* 1. 장식 팔레트 */
+    .ornament-palette {
+        flex: none; /* 고정 크기 제거 */
+        width: 100%; /* 너비를 꽉 채우도록 변경 */
+        height: auto; /* 높이를 자동으로 변경 */
+        order: 2; /* 아래로 내려가도록 순서 변경 */
+    }
+    
+    /* 2. 트리 영역 */
+    .tree-area {
+        height: 400px; /* 모바일에서 높이 줄이기 */
+        order: 1; /* 위로 올라가도록 순서 변경 */
+    }
+    
+    /* 트리 제목 크기 조정 */
+    .tree-main h1 {
+        font-size: 2em; 
+    }
+}

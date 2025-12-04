@@ -36,10 +36,13 @@
     justify-content: space-around;
     gap: 20px;
     margin-bottom: 40px;
+    /* 🚨 필수 추가: 화면이 좁아지면 카드가 아래로 내려가도록 설정 */
+    flex-wrap: wrap;
 }
 
 .game-card {
-    flex: 1;
+    flex: 1 1 250px; /* 최소 250px을 유지하고 공간이 남으면 늘어남 */
+    min-width: 250px;
     background-color: #f7f7f7;
     color: var(--color-black-text);
     padding: 20px;
@@ -100,4 +103,27 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
+}
+
+/* 🚨 미디어 쿼리 추가: 태블릿/모바일 (600px 이하) */
+@media (max-width: 600px) {
+    .game-selection {
+        flex-direction: column; /* 카드를 수직으로 배열 */
+        gap: 15px;
+    }
+    
+    .game-card {
+        width: 100%; /* 너비를 꽉 채우도록 설정 */
+        min-width: 0;
+    }
+    
+    /* 게임 캔버스 영역 너비 조정 */
+    .game-area {
+        height: 350px; /* 높이 줄이기 */
+    }
+    
+    /* 미니게임 컨테이너 패딩 조정 */
+    .minigame-container {
+        padding: 20px;
+    }
 }
