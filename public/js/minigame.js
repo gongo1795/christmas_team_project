@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- 플레이어 (바구니) 설정 ---
         const player = {
             width: 90,
-            height: 30,
+            height: 40,
             x: canvas.width / 2 - 45,
             y: canvas.height - 50,
             speed: 5,
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const randomGiftImg = fallingGiftImgs[Math.floor(Math.random() * fallingGiftImgs.length)];
 
             const gift = {
-                size: Math.random() * 10 + 20, 
+                size: Math.random() * 20 + 25, 
                 x: Math.random() * (canvas.width - 25),
                 y: 0,
                 speed: Math.random() * 1 + 1.5,
