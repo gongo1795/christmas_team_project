@@ -1,3 +1,26 @@
+const giftBasketImg = new Image();
+giftBasketImg.src = 'assets/images/basket.png'; // 🎁 바구니 이미지
+
+const santaImg = new Image();
+santaImg.src = 'assets/images/santa.png'; // 🎅 산타 이미지
+
+const rudolphImg = new Image();
+rudolphImg.src = 'assets/images/rudolph.png'; // 🦌 루돌프 이미지
+
+const GIFT_IMAGE_SOURCES = [
+    'assets/images/gift_red.png',    // 1번 선물
+    'assets/images/gift_blue.png',   // 2번 선물
+    'assets/images/gift_green.png',  // 3번 선물
+]; // 🎁 떨어지는 선물 이미지
+
+const fallingGiftImgs = [];
+GIFT_IMAGE_SOURCES.forEach(src => {
+    const img = new Image();
+    img.src = src;
+    fallingGiftImgs.push(img);
+})
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const gameSelection = document.querySelector('.game-selection');
     const gameArea = document.getElementById('game-area');
@@ -9,6 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!card) return;
 
         const gameType = card.getAttribute('data-game');
+
+        gameArea.className = 'game-area'; 
+        gameArea.classList.add(gameType + '-bg'); // 배경 클래스 추가
         
         // 이전에 실행 중이던 게임 초기화 (필요시)
         gameArea.innerHTML = `<p>게임 로드 중: ${gameType}...</p>`;
@@ -35,10 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // ... (기존 Falling Gifts 게임 로직 유지) ...
         gameArea.innerHTML = `
             <div id="game-controls">
-                <button id="startGameBtn" class="button-red">시작하기</button>
-                <div id="scoreDisplay" style="color: white; font-size: 1.2em; margin-top: 10px;">점수: 0</div>
-            </div>
-            <canvas id="fallingGiftsCanvas" width="600" height="400" style="background-color: #0F2027; border: 2px solid white; margin-top: 10px;"></canvas>
+                </div>
+            <canvas id="fallingGiftsCanvas" width="600" height="400" style="background-color: transparent; border: 2px solid white; margin-top: 10px;"></canvas>
             <div id="gameOverMessage" style="color: red; font-size: 2em; display: none;">GAME OVER!</div>
         `;
         
@@ -64,8 +88,13 @@ document.addEventListener('DOMContentLoaded', () => {
             movingLeft: false,
             movingRight: false,
             draw: function() {
-                ctx.fillStyle = this.color;
-                ctx.fillRect(this.x, this.y, this.width, this.height);
+                // 🚨 사각형 대신 이미지 그리기
+                if (giftBasketImg.complete) {
+                    ctx.drawImage(giftBasketImg, this.x, this.y, this.width, this.height);
+                } else {
+                    ctx.fillStyle = this.color;
+                    ctx.fillRect(this.x, this.y, this.width, this.height);
+                }
             }
         };
 
@@ -74,19 +103,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- 선물 생성 함수 ---
         function createGift() {
+             // 🚨 1. 무작위로 이미지 객체를 선택합니다.
+            const randomGiftImg = fallingGiftImgs[Math.floor(Math.random() * fallingGiftImgs.length)];
+
             const gift = {
                 size: Math.random() * 10 + 20, // 크기 15~25
                 x: Math.random() * (canvas.width - 25),
                 y: 0,
                 speed: Math.random() * 1 + 1.5, // 속도 1.5 ~ 2.5
-                color: ['red', 'green', 'gold'][Math.floor(Math.random() * 3)],
+                color: 'red', // 대체 사각형 색상
+                image: randomGiftImg, // 선택된 이미지 객체 저장
+                
                 draw: function() {
-                    ctx.fillStyle = this.color;
-                    ctx.fillRect(this.x, this.y, this.size, this.size);
-                    // 선물 리본 (단순화)
-                    ctx.fillStyle = 'white';
-                    ctx.fillRect(this.x + this.size / 2 - 2, this.y, 4, this.size);
-                    ctx.fillRect(this.x, this.y + this.size / 2 - 2, this.size, 4);
+                    // 🚨 2. 저장된 이미지 객체를 그립니다.
+                    if (this.image.complete) {
+                        ctx.drawImage(this.image, this.x, this.y, this.size, this.size);
+                    } else {
+                        // 이미지가 없을 경우 대체 (기존 사각형 + 리본)
+                        ctx.fillStyle = this.color;
+                        ctx.fillRect(this.x, this.y, this.size, this.size);
+                        ctx.fillStyle = 'white';
+                        ctx.fillRect(this.x + this.size / 2 - 2, this.y, 4, this.size);
+                        ctx.fillRect(this.x, this.y + this.size / 2 - 2, this.size, 4);
+                    }
                 }
             };
             gifts.push(gift);
@@ -204,10 +243,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // 게임 영역에 캔버스 삽입
         gameArea.innerHTML = `
             <div id="game-controls" style="margin-bottom: 10px;">
-                <button id="startGameBtnDodge" class="button-green">시작하기</button>
-                <div id="timeDisplay" style="color: white; font-size: 1.2em; margin-top: 10px;">남은 시간: ${TIME_LIMIT}초</div>
-            </div>
-            <canvas id="santaDodgeCanvas" width="600" height="400" style="background-color: #0F2027; border: 2px solid white;"></canvas>
+                </div>
+            <canvas id="santaDodgeCanvas" width="600" height="400" style="background-color: transparent; border: 2px solid white;"></canvas>
             <div id="resultMessage" style="color: red; font-size: 2em; margin-top: 10px; display: none;"></div>
         `;
 
@@ -231,10 +268,15 @@ document.addEventListener('DOMContentLoaded', () => {
             movingLeft: false,
             movingRight: false,
             draw: function() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x + this.size/2, this.y + this.size/2, this.size/2, 0, Math.PI * 2);
-                ctx.fill();
+                // 🚨 원형 대신 루돌프 이미지 그리기
+                if (rudolphImg.complete) {
+                    ctx.drawImage(rudolphImg, this.x, this.y, this.size, this.size);
+                } else {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x + this.size/2, this.y + this.size/2, this.size/2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             }
         };
 
@@ -249,9 +291,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 y: 0,
                 speed: Math.random() * 1.5 + 2.5, // 속도 2.5~4
                 color: 'red',
+                
                 draw: function() {
-                    ctx.fillStyle = this.color;
-                    ctx.fillRect(this.x, this.y, this.size, this.size);
+                    // 🚨 산타 이미지 사용
+                    if (santaImg.complete) {
+                        ctx.drawImage(santaImg, this.x, this.y, this.size, this.size);
+                    } else {
+                        // 이미지가 없을 경우 대체 (기존 사각형)
+                        ctx.fillStyle = this.color;
+                        ctx.fillRect(this.x, this.y, this.size, this.size);
+                    }
                 }
             };
             santas.push(santa);

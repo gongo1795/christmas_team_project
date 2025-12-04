@@ -91,6 +91,22 @@
     border: 5px dashed var(--color-gold-accent);
 }
 
+/* 🎁 선물 잡기 게임 배경 */
+.game-area.falling-gifts-bg {
+    background-image: url('../assets/images/falling_bg.jpg');
+    /* 배경 이미지가 어두울 경우, 텍스트 가독성을 위해 오버레이 추가 가능 */
+}
+
+/* 🎅 산타 피하기 게임 배경 */
+.game-area.santa-dodge-bg {
+    background-image: url('../assets/images/santa_dodge_bg.jpg');
+}
+
+/* 🌨️ 눈송이 터뜨리기 배경 */
+.game-area.snow-clicker-bg {
+    background-image: url('../assets/images/snow_clicker_bg.jpg');
+}
+
 /* 눈송이 터뜨리기 게임의 컨테이너 */
 #snowClickerContainer {
     /* js에서 인라인 스타일로 설정되지만, 기본 배경을 위해 추가 */
@@ -126,4 +142,25 @@
     .minigame-container {
         padding: 20px;
     }
+}
+
+/* 캔버스 공통 스타일 */
+#fallingGiftsCanvas, 
+#santaDodgeCanvas {
+    /* 캔버스 자체에 오버레이를 적용하여 배경 이미지를 은은하게 어둡게 만듭니다. */
+    position: relative;
+}
+
+#fallingGiftsCanvas::after,
+#santaDodgeCanvas::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* 반투명한 검은색 레이어 (RGBA 값에서 마지막 0.3이 투명도입니다) */
+    background-color: rgba(0, 0, 0, 0.3);
+    pointer-events: none; /* 클릭을 방해하지 않도록 설정 */
+    z-index: 10;
 }
