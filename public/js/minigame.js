@@ -50,7 +50,14 @@ document.addEventListener('DOMContentLoaded', () => {
         gameArea.className = 'game-area';
         gameArea.classList.add(gameType + '-bg');
 
-        gameArea.innerHTML = `<p>게임 로드 중: ${gameType}...</p>`;
+        gameArea.innerHTML = `
+            <p style="font-size:1.1rem; text-align:center; line-height:1.6; margin-top:40px;">
+                🎮 미니게임을 시작하려면 <br>
+                원하는 게임을 선택하고<br>
+                <strong>난이도</strong>와 <strong>시작하기</strong> 버튼을 눌러주세요!
+            </p>
+        `;
+
 
         switch (gameType) {
             case 'falling-gifts':
