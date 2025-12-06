@@ -68,7 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ===================================================================
-    // 1. 선물 잡기 게임 (FALLING GIFTS) - 난이도 + 하이스코어
+    // 1. 선물 잡기 게임 (FALLING GIFTS)
+    //    - 난이도 조정 + 범위 확대 + 하이스코어 + 리셋 버튼
     // ===================================================================
     function loadFallingGiftsGame(gameArea) {
         // 난이도 설정 (난이도 상향 + 범위 넓힘)
@@ -116,6 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div style="text-align:right;">
                     <div id="scoreDisplay" style="color: white; font-size: 1.0em;">점수: 0</div>
                     <div id="bestScoreDisplay" style="color: gold; font-size: 0.9em;">최고 점수: 0</div>
+                    <button id="resetFallingBest" class="button-green" style="margin-top:4px; font-size:0.8em; padding:4px 8px;">
+                        최고 점수 초기화
+                    </button>
                 </div>
             </div>
             <canvas id="fallingGiftsCanvas" width="600" height="400" style="background-color: transparent; border: 2px solid white; margin-top: 10px;"></canvas>
@@ -129,10 +133,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const bestScoreDisplay = document.getElementById('bestScoreDisplay');
         const gameOverMessage = document.getElementById('gameOverMessage');
         const diffSelect = document.getElementById('giftDifficulty');
+        const resetFallingBestBtn = document.getElementById('resetFallingBest');
 
         // 로컬스토리지에서 최고 점수 불러오기
         let bestScore = Number(localStorage.getItem('bestScore_fallingGifts')) || 0;
         bestScoreDisplay.textContent = `최고 점수: ${bestScore}`;
+
+        // 최고 점수 초기화
+        resetFallingBestBtn.addEventListener('click', () => {
+            bestScore = 0;
+            localStorage.removeItem('bestScore_fallingGifts');
+            bestScoreDisplay.textContent = '최고 점수: 0';
+        });
 
         diffSelect.addEventListener('change', () => {
             currentDifficulty = diffSelect.value;
@@ -265,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     i--;
                 }
                 // 바닥까지 떨어지면 게임 종료
-            else if (gift.y > canvas.height) {
+                else if (gift.y > canvas.height) {
                     gifts.splice(i, 1);
                     i--;
                     finishGame();
@@ -312,7 +324,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===================================================================
-    // 2. 산타 피하기 게임 (SANTA DODGE) - 무제한 + 난이도 + 하이스코어
+    // 2. 산타 피하기 게임 (SANTA DODGE)
+    //    - 무제한 모드 + 난이도 조정 + 하이스코어 + 리셋 버튼
     // ===================================================================
     function loadSantaDodgeGame(gameArea) {
         // 난이도 설정 (전반적으로 더 어렵게)
@@ -357,6 +370,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div style="text-align:right;">
                     <div id="santaScoreDisplay" style="color: white; font-size: 1.0em;">점수: 0</div>
                     <div id="santaBestScoreDisplay" style="color: gold; font-size: 0.9em;">최고 점수: 0</div>
+                    <button id="resetSantaBest" class="button-red" style="margin-top:4px; font-size:0.8em; padding:4px 8px;">
+                        최고 점수 초기화
+                    </button>
                 </div>
             </div>
             <canvas id="santaDodgeCanvas" width="600" height="400" style="background-color: transparent; border: 2px solid white;"></canvas>
@@ -370,10 +386,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const santaScoreDisplay = document.getElementById('santaScoreDisplay');
         const santaBestScoreDisplay = document.getElementById('santaBestScoreDisplay');
         const diffSelect = document.getElementById('santaDifficulty');
+        const resetSantaBestBtn = document.getElementById('resetSantaBest');
 
         // 하이스코어 불러오기
         let bestScore = Number(localStorage.getItem('bestScore_santaDodge')) || 0;
         santaBestScoreDisplay.textContent = `최고 점수: ${bestScore}`;
+
+        // 최고 점수 초기화
+        resetSantaBestBtn.addEventListener('click', () => {
+            bestScore = 0;
+            localStorage.removeItem('bestScore_santaDodge');
+            santaBestScoreDisplay.textContent = '최고 점수: 0';
+        });
 
         diffSelect.addEventListener('change', () => {
             currentDifficulty = diffSelect.value;
@@ -491,7 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     endGame();
                     return;
                 } else if (santa.y > canvas.height) {
-                    // 화면 아래로 나가면 "회피 성공"으로 간주 → 점수 +1
+                    // 화면 아래로 나가면 "회피 성공" → 점수 +1
                     score += 1;
                     santaScoreDisplay.textContent = `점수: ${score}`;
                     santas.splice(i, 1);
@@ -536,7 +560,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===================================================================
-    // 3. 눈송이 클릭 게임 (SNOW CLICKER) - 난이도 + 하이스코어
+    // 3. 눈송이 클릭 게임 (SNOW CLICKER)
+    //    - 난이도 조정 + 하이스코어 + 리셋 버튼
     // ===================================================================
     function loadSnowClickerGame(gameArea) {
         const DIFFICULTY = {
@@ -581,6 +606,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div id="clickerTimeDisplay" style="color: white; font-size: 1.0em;">시간: 15.00초</div>
                     <div id="clickerScoreDisplay" style="color: white; font-size: 1.0em;">점수: 0</div>
                     <div id="clickerBestScoreDisplay" style="color: gold; font-size: 0.9em;">최고 점수: 0</div>
+                    <button id="resetClickerBest" class="button-green" style="margin-top:4px; font-size:0.8em; padding:4px 8px;">
+                        최고 점수 초기화
+                    </button>
                 </div>
             </div>
             <div id="snowClickerContainer" style="width: 100%; height: 80%; position: relative; border: 2px dashed #FFF; background-color: #2c3e50; border-radius: 8px;"></div>
@@ -594,6 +622,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const bestScoreDisplay = document.getElementById('clickerBestScoreDisplay');
         const resultMessage = document.getElementById('clickerResultMessage');
         const diffSelect = document.getElementById('clickerDifficulty');
+        const resetClickerBestBtn = document.getElementById('resetClickerBest');
 
         let score = 0;
         let isGameRunning = false;
@@ -603,6 +632,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // 하이스코어 불러오기
         let bestScore = Number(localStorage.getItem('bestScore_snowClicker')) || 0;
         bestScoreDisplay.textContent = `최고 점수: ${bestScore}`;
+
+        // 최고 점수 초기화
+        resetClickerBestBtn.addEventListener('click', () => {
+            bestScore = 0;
+            localStorage.removeItem('bestScore_snowClicker');
+            bestScoreDisplay.textContent = '최고 점수: 0';
+        });
 
         diffSelect.addEventListener('change', () => {
             currentDifficulty = diffSelect.value;
