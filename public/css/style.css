@@ -184,3 +184,8 @@ body {
 #music-toggle:hover {
     background-color: #2F4738; 
 }
+
+/* 한글 단어가 중간에서 끊기지 않도록 설정 */
+body, h1, h2, h3, h4, h5, h6, p {
+    word-break: keep-all;
+}
