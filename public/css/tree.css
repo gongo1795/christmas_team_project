@@ -1,5 +1,8 @@
-/* --- 트리 꾸미기 페이지 전용 스타일 --- */
+/* ===========================
+   트리 꾸미기 페이지 전용 스타일
+   =========================== */
 
+/* 전체 래퍼 */
 .tree-main {
     padding: 40px 20px;
     max-width: 1200px;
@@ -7,7 +10,7 @@
     text-align: center;
 }
 
-/* 제목 폰트 */
+/* 제목 */
 .tree-main h1 {
     font-family: var(--font-hahmlet);
     font-size: 2.8em;
@@ -24,22 +27,32 @@
     margin-bottom: 20px;
 }
 
+/* 트리 꾸미기 메인 컨테이너 (좌: 팔레트 / 우: 트리) */
 .decorator-container {
     display: flex;
+    align-items: stretch;
+    justify-content: center;
     gap: 30px;
     margin-top: 30px;
 }
 
-/* 1. 장식 팔레트 */
+/* ======================
+   1. 장식 팔레트 영역
+   ====================== */
+
 .ornament-palette {
-    flex: 0 0 200px;
-    background-color: #fff;
+    flex: 0 0 220px;
+    background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: var(--shadow-light);
     height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
+/* 팔레트 안의 장식 리스트 */
 .ornaments-list {
     display: flex;
     flex-wrap: wrap;
@@ -48,71 +61,87 @@
     margin-bottom: 20px;
 }
 
-/* 장식 아이템 */
+/* 공통 장식 스타일 (팔레트용 기본) */
 .ornament {
     width: 60px;
     height: 60px;
+    border-radius: 50%;
+    cursor: grab;
+    background-color: transparent;
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    border-radius: 50%;
-    cursor: grab;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     transition: transform 0.15s;
-    background-color: transparent;
 }
 
 .ornament:hover {
     transform: scale(1.1);
 }
+
 .ornament:active {
     cursor: grabbing;
 }
 
-/* 각 장식별 이미지 연결 (assets/images 폴더 기준) */
+/* ▶ 이미지 장식 연결 (public/assets/images 기준 경로) */
 .bell {
     background-image: url("../assets/images/bell.png");
 }
+
 .cookie {
     background-image: url("../assets/images/cookie.png");
 }
+
 .green_box {
     background-image: url("../assets/images/green_box.png");
 }
+
 .red_ball {
     background-image: url("../assets/images/red_ball.png");
 }
+
 .red_box {
     background-image: url("../assets/images/red_box.png");
 }
+
 .ribbon {
     background-image: url("../assets/images/ribbon.png");
 }
+
 .snow {
     background-image: url("../assets/images/snow.png");
 }
+
 .star {
     background-image: url("../assets/images/star.png");
 }
+
 .stick {
     background-image: url("../assets/images/stick.png");
 }
 
-/* 2. 트리 영역 */
+/* ======================
+   2. 트리 영역
+   ====================== */
+
 .tree-area {
     flex: 1;
+    min-width: 0;
     position: relative;
     height: 600px;
+
     border: 3px solid var(--color-red-christmas);
     border-radius: 10px;
     overflow: hidden;
+
+    /* 트리 뒤 배경 이미지 */
     background-image: url("../assets/images/tree_bg.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }
 
-/* 초록색 트리 모양 */
+/* 초록색 트리 모양 (장식들이 올라가는 부분) */
 .main-tree {
     position: absolute;
     bottom: 0;
@@ -120,12 +149,13 @@
     transform: translateX(-50%);
     width: 80%;
     height: 90%;
+
     background-color: var(--color-green-christmas);
     clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
     border-radius: 10% / 50%;
 }
 
-/* 트리 위 장식 */
+/* 트리 위에 올라간 장식(드래그 후) */
 .tree-area .ornament {
     position: absolute;
     width: 70px;
@@ -137,13 +167,17 @@
     transition: transform 0.2s;
 }
 
-/* 메모가 달린 장식 */
+/* 메모가 달린 장식 강조 */
 .ornament[data-memo] {
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8),
-                0 0 4px rgba(0, 0, 0, 0.5);
+    box-shadow:
+        0 0 8px rgba(255, 255, 255, 0.8),
+        0 0 4px rgba(0, 0, 0, 0.5);
 }
 
-/* 모달 스타일 */
+/* ======================
+   3. 메모 모달 공통 스타일
+   ====================== */
+
 .modal {
     display: none;
     position: fixed;
@@ -153,12 +187,12 @@
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
 .modal-content {
-    background-color: #fff;
-    color: #000;
+    background-color: #ffffff;
+    color: #000000;
     margin: 15% auto;
     padding: 30px;
     border-radius: 10px;
@@ -166,6 +200,7 @@
     max-width: 400px;
     position: relative;
     font-family: var(--font-primary);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .modal-content h2 {
@@ -183,11 +218,42 @@
     cursor: pointer;
 }
 
-.close-button:hover {
+.close-button:hover,
+.close-button:focus {
     color: var(--color-red-christmas);
 }
 
-/* 반응형 */
+/* 메모 입력 / 보기 영역이 있다면 기본 스타일 (필요한 경우만 사용) */
+#memo-input-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#input-memo-text {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    border: 2px solid var(--color-green-christmas);
+    border-radius: 5px;
+    resize: none;
+    font-family: var(--font-primary);
+    font-size: 1em;
+}
+
+#view-memo-text {
+    white-space: pre-wrap;
+    font-size: 1.05em;
+    padding: 10px;
+    background-color: #f7f7f7;
+    border-radius: 5px;
+    border: 1px dashed #ccc;
+}
+
+/* ======================
+   4. 반응형
+   ====================== */
+
 @media (max-width: 768px) {
     .decorator-container {
         flex-direction: column;
@@ -209,4 +275,9 @@
         width: 50px;
         height: 50px;
     }
-}  
+
+    .tree-area .ornament {
+        width: 60px;
+        height: 60px;
+    }
+}
