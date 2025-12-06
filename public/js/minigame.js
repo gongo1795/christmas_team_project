@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
             <div style="font-size:0.85rem; color:#fff; margin-top:4px; opacity:0.8;">
-                ⌨️ <strong>← →</strong> 또는 <strong>A / D</strong> 키로 움직일 수 있어요!
+                ⌨️ <strong>← →</strong> 키로 움직일 수 있어요!
             </div>
             <canvas id="fallingGiftsCanvas" width="600" height="400" style="background-color: transparent; border: 2px solid white; margin-top: 10px;"></canvas>
             <div id="gameOverMessage" style="color: red; font-size: 1.5em; display: none; margin-top:8px;">GAME OVER!</div>
@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
             <div style="font-size:0.85rem; color:#fff; margin-top:4px; opacity:0.8;">
-                ⌨️ <strong>← →</strong> 또는 <strong>A / D</strong> 키로 움직일 수 있어요!
+                ⌨️ <strong>← →</strong> 키로 움직일 수 있어요!
             </div>
             <canvas id="santaDodgeCanvas" width="600" height="400" style="background-color: transparent; border: 2px solid white;"></canvas>
             <div id="resultMessage" style="color: red; font-size: 1.5em; margin-top: 10px; display: none;"></div>
