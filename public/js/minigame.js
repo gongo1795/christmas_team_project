@@ -611,7 +611,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     </button>
                 </div>
             </div>
-            <div id="snowClickerContainer" style="width: 100%; height: 80%; position: relative; border: 2px dashed #FFF; background-color: #2c3e50; border-radius: 8px;"></div>
+            <div id="snowClickerContainer"
+                 style="width: 100%; min-height: 320px; position: relative;
+                        border: 2px dashed #FFF; background-color: #2c3e50;
+                        border-radius: 8px; overflow: hidden;"></div>
             <div id="clickerResultMessage" style="color: lime; font-size: 1.5em; margin-top: 10px; display: none;"></div>
         `;
 
