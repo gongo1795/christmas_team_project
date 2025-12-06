@@ -36,7 +36,7 @@
     justify-content: space-around;
     gap: 20px;
     margin-bottom: 40px;
-    /* 🚨 필수 추가: 화면이 좁아지면 카드가 아래로 내려가도록 설정 */
+    /* 화면이 좁아지면 카드가 아래로 내려가도록 설정 */
     flex-wrap: wrap;
 }
 
@@ -49,7 +49,6 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
-    min-width: 250px;
 }
 
 .game-card:hover {
@@ -69,27 +68,37 @@
 .game-area {
     /* 배경은 기본값으로 유지하거나 제거 */
     background-color: var(--color-black-text);
-    height: 500px; 
+
+    /* 🔧 고정 높이 → 최소 높이 + 자동 높이로 변경 (잘림 방지) */
+    min-height: 500px;
+    height: auto;
+
     border-radius: 8px;
     
-    /* 두 번째 정의에서 가져옴 */
     display: flex;
     flex-direction: column; /* 컨트롤과 캔버스가 수직으로 배치 */
-    justify-content: center;
+
+    /* 🔧 가운데 정렬 → 위에서부터 쌓이도록 변경 */
+    justify-content: flex-start;
     align-items: center;
 
     color: var(--color-white-snow);
     font-size: 1.5em;
     padding: 20px;
+    box-sizing: border-box;
     
-    /* 두 번째 정의에서 가져옴 */
     border: 5px dashed var(--color-gold-accent); /* 최종 테두리 선택 */
     
-    /* --- 배경 이미지 설정이 작동하도록 배경 속성을 초기화 또는 제거 --- */
+    /* 배경 이미지 설정 */
     background-size: cover; /* 동적 배경 클래스에 이미 정의되어 있어야 합니다. */
     background-position: center;
 }
 
+/* 게임 영역 안의 캔버스 여백 (컨트롤과 너무 붙지 않게) */
+.game-area canvas {
+    margin-top: 10px;
+    display: block;
+}
 
 /* 🎁 선물 잡기 게임 배경 */
 .game-area.falling-gifts-bg {
@@ -113,7 +122,7 @@
     background-color: #2c3e50; 
 }
 
-/* Falling Gifts / Santa Dodge의 캔버스 컨테이너를 위해 다시 중앙 정렬 */
+/* Falling Gifts / Santa Dodge의 컨트롤 영역 */
 #game-controls {
     width: 100%;
     display: flex;
@@ -121,7 +130,7 @@
     align-items: center;
 }
 
-/* 🚨 미디어 쿼리 추가: 태블릿/모바일 (600px 이하) */
+/* 🚨 미디어 쿼리: 태블릿/모바일 (600px 이하) */
 @media (max-width: 600px) {
     .game-selection {
         flex-direction: column; /* 카드를 수직으로 배열 */
@@ -133,9 +142,11 @@
         min-width: 0;
     }
     
-    /* 게임 캔버스 영역 너비 조정 */
+    /* 🔧 모바일에서도 잘리지 않도록 고정 height 대신 min-height 사용 */
     .game-area {
-        height: 350px; /* 높이 줄이기 */
+        min-height: 350px;
+        height: auto;
+        padding: 16px;
     }
     
     /* 미니게임 컨테이너 패딩 조정 */
