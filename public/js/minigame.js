@@ -71,28 +71,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. 선물 잡기 게임 (FALLING GIFTS) - 난이도 + 하이스코어
     // ===================================================================
     function loadFallingGiftsGame(gameArea) {
-        // 난이도 설정
+        // 난이도 설정 (난이도 상향 + 범위 넓힘)
         const DIFFICULTY = {
+            // 새 쉬움 = 기존 보통 느낌
             easy: {
                 label: '쉬움',
-                spawnInterval: 1700,
-                speedMin: 1.0,
-                speedMax: 1.6,
-                spawnRange: 180, // 바구니 주변 좁게
-            },
-            normal: {
-                label: '보통',
                 spawnInterval: 1300,
                 speedMin: 1.4,
                 speedMax: 2.1,
-                spawnRange: 260,
+                spawnRange: 320,   // 범위 넓힘
             },
+            // 새 보통 = 기존 어려움보다 약간 더 빡셈
+            normal: {
+                label: '보통',
+                spawnInterval: 950,
+                speedMin: 1.8,
+                speedMax: 2.7,
+                spawnRange: 420,   // 훨씬 넓게
+            },
+            // 새 어려움 = 하드코어 모드
             hard: {
                 label: '어려움',
-                spawnInterval: 900,
-                speedMin: 1.8,
-                speedMax: 2.6,
-                spawnRange: 340,
+                spawnInterval: 700,
+                speedMin: 2.2,
+                speedMax: 3.2,
+                spawnRange: 540,   // 거의 화면 전체
             },
         };
         let currentDifficulty = 'normal';
@@ -166,16 +169,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const randomGiftImg = fallingGiftImgs[Math.floor(Math.random() * fallingGiftImgs.length)];
             const size = Math.random() * 25 + 30;
 
-            // 🎯 바구니 주변으로만 생성 (spawnRange 사용)
+            // 🎯 바구니 주변 기준으로, 난이도에 따라 더 넓은 범위에서 생성
             const range = cfg.spawnRange;
             const centerX = player.x + player.width / 2;
             let minX = centerX - range / 2;
             let maxX = centerX + range / 2 - size;
 
             if (minX < 0) minX = 0;
+            if (maxX < 0) maxX = 0;
             if (maxX > canvas.width - size) maxX = canvas.width - size;
 
-            const xPos = minX + Math.random() * (maxX - minX);
+            const xPos = minX + Math.random() * (maxX - minX || 1);
 
             const speed = cfg.speedMin + Math.random() * (cfg.speedMax - cfg.speedMin);
 
@@ -261,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     i--;
                 }
                 // 바닥까지 떨어지면 게임 종료
-                else if (gift.y > canvas.height) {
+            else if (gift.y > canvas.height) {
                     gifts.splice(i, 1);
                     i--;
                     finishGame();
@@ -311,25 +315,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. 산타 피하기 게임 (SANTA DODGE) - 무제한 + 난이도 + 하이스코어
     // ===================================================================
     function loadSantaDodgeGame(gameArea) {
-        // 난이도 설정
+        // 난이도 설정 (전반적으로 더 어렵게)
         const DIFFICULTY = {
+            // 새 쉬움 = 기존 보통 정도
             easy: {
                 label: '쉬움',
-                spawnInterval: 600,
-                speedMin: 2.0,
-                speedMax: 2.8,
-            },
-            normal: {
-                label: '보통',
                 spawnInterval: 420,
                 speedMin: 2.5,
                 speedMax: 3.3,
             },
-            hard: {
-                label: '어려움',
-                spawnInterval: 280,
+            // 새 보통 = 기존 어려움급
+            normal: {
+                label: '보통',
+                spawnInterval: 300,
                 speedMin: 3.0,
                 speedMax: 4.0,
+            },
+            // 새 어려움 = 더 빡세게
+            hard: {
+                label: '어려움',
+                spawnInterval: 210,
+                speedMin: 3.5,
+                speedMax: 4.8,
             },
         };
         let currentDifficulty = 'normal';
@@ -373,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         let isGameOver = false;
-       let score = 0;
+        let score = 0;
         let animationFrameId = null;
         let santaInterval = null;
 
@@ -533,23 +540,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===================================================================
     function loadSnowClickerGame(gameArea) {
         const DIFFICULTY = {
+            // 새 쉬움 = 기존 보통
             easy: {
                 label: '쉬움',
-                duration: 15000,
-                spawnInterval: 800,
-                maxFlakes: 7,
-            },
-            normal: {
-                label: '보통',
                 duration: 15000,
                 spawnInterval: 600,
                 maxFlakes: 10,
             },
-            hard: {
-                label: '어려움',
+            // 새 보통 = 기존 어려움급
+            normal: {
+                label: '보통',
                 duration: 12000,
                 spawnInterval: 450,
                 maxFlakes: 12,
+            },
+            // 새 어려움 = 더 짧은 시간 + 더 많은 눈송이
+            hard: {
+                label: '어려움',
+                duration: 10000,
+                spawnInterval: 350,
+                maxFlakes: 14,
             },
         };
         let currentDifficulty = 'normal';
