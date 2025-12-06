@@ -19,7 +19,7 @@
 }
 
 .minigame-container h1 {
-    font-family: var(--font-bangers); 
+    font-family: var(--font-hahmlet);  /* 또는 var(--font-primary); */
     color: var(--color-black-text);
     margin-bottom: 10px;
 }
