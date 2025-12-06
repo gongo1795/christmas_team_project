@@ -68,23 +68,72 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ===================================================================
-    // 1. 선물 잡기 게임 (FALLING GIFTS)
+    // 1. 선물 잡기 게임 (FALLING GIFTS) - 난이도 + 하이스코어
     // ===================================================================
     function loadFallingGiftsGame(gameArea) {
+        // 난이도 설정
+        const DIFFICULTY = {
+            easy: {
+                label: '쉬움',
+                spawnInterval: 1700,
+                speedMin: 1.0,
+                speedMax: 1.6,
+                spawnRange: 180, // 바구니 주변 좁게
+            },
+            normal: {
+                label: '보통',
+                spawnInterval: 1300,
+                speedMin: 1.4,
+                speedMax: 2.1,
+                spawnRange: 260,
+            },
+            hard: {
+                label: '어려움',
+                spawnInterval: 900,
+                speedMin: 1.8,
+                speedMax: 2.6,
+                spawnRange: 340,
+            },
+        };
+        let currentDifficulty = 'normal';
+
         gameArea.innerHTML = `
-            <div id="game-controls">
-                <button id="startGameBtn" class="button-red">시작하기</button>
-                <div id="scoreDisplay" style="color: white; font-size: 1.2em; margin-top: 10px;">점수: 0</div>
+            <div id="game-controls" style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:10px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <label style="color:white; font-size:0.9em;">
+                        난이도:
+                        <select id="giftDifficulty" style="margin-left:4px; padding:4px 8px; border-radius:4px;">
+                            <option value="easy">쉬움</option>
+                            <option value="normal" selected>보통</option>
+                            <option value="hard">어려움</option>
+                        </select>
+                    </label>
+                    <button id="startGameBtn" class="button-red" style="margin-left:8px;">시작하기</button>
+                </div>
+                <div style="text-align:right;">
+                    <div id="scoreDisplay" style="color: white; font-size: 1.0em;">점수: 0</div>
+                    <div id="bestScoreDisplay" style="color: gold; font-size: 0.9em;">최고 점수: 0</div>
+                </div>
             </div>
             <canvas id="fallingGiftsCanvas" width="600" height="400" style="background-color: transparent; border: 2px solid white; margin-top: 10px;"></canvas>
-            <div id="gameOverMessage" style="color: red; font-size: 2em; display: none;">GAME OVER!</div>
+            <div id="gameOverMessage" style="color: red; font-size: 1.5em; display: none; margin-top:8px;">GAME OVER!</div>
         `;
 
         const canvas = document.getElementById('fallingGiftsCanvas');
         const ctx = canvas.getContext('2d');
         const startGameBtn = document.getElementById('startGameBtn');
         const scoreDisplay = document.getElementById('scoreDisplay');
+        const bestScoreDisplay = document.getElementById('bestScoreDisplay');
         const gameOverMessage = document.getElementById('gameOverMessage');
+        const diffSelect = document.getElementById('giftDifficulty');
+
+        // 로컬스토리지에서 최고 점수 불러오기
+        let bestScore = Number(localStorage.getItem('bestScore_fallingGifts')) || 0;
+        bestScoreDisplay.textContent = `최고 점수: ${bestScore}`;
+
+        diffSelect.addEventListener('change', () => {
+            currentDifficulty = diffSelect.value;
+        });
 
         let score = 0;
         let isGameOver = false;
@@ -94,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const player = {
             width: 90,
             height: 40,
-            x: canvas.width / 2 - 45, // 처음 중앙
+            x: canvas.width / 2 - 45,
             y: canvas.height - 50,
             speed: 5,
             color: 'brown',
@@ -113,13 +162,28 @@ document.addEventListener('DOMContentLoaded', () => {
         let gifts = [];
 
         function createGift() {
+            const cfg = DIFFICULTY[currentDifficulty];
             const randomGiftImg = fallingGiftImgs[Math.floor(Math.random() * fallingGiftImgs.length)];
+            const size = Math.random() * 25 + 30;
+
+            // 🎯 바구니 주변으로만 생성 (spawnRange 사용)
+            const range = cfg.spawnRange;
+            const centerX = player.x + player.width / 2;
+            let minX = centerX - range / 2;
+            let maxX = centerX + range / 2 - size;
+
+            if (minX < 0) minX = 0;
+            if (maxX > canvas.width - size) maxX = canvas.width - size;
+
+            const xPos = minX + Math.random() * (maxX - minX);
+
+            const speed = cfg.speedMin + Math.random() * (cfg.speedMax - cfg.speedMin);
 
             const gift = {
-                size: Math.random() * 25 + 30,
-                x: Math.random() * (canvas.width - 25),
+                size: size,
+                x: xPos,
                 y: 0,
-                speed: Math.random() * 1 + 1.5,
+                speed: speed,
                 color: 'red',
                 image: randomGiftImg,
                 draw: function () {
@@ -154,6 +218,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        function finishGame() {
+            isGameOver = true;
+            if (giftInterval) clearInterval(giftInterval);
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            gameOverMessage.style.display = 'block';
+
+            // 최고 점수 갱신
+            if (score > bestScore) {
+                bestScore = score;
+                localStorage.setItem('bestScore_fallingGifts', String(bestScore));
+                bestScoreDisplay.textContent = `최고 점수: ${bestScore}`;
+            }
+        }
+
         function updateGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -181,23 +260,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     gifts.splice(i, 1);
                     i--;
                 }
-                // 놓치면 게임 오버
+                // 바닥까지 떨어지면 게임 종료
                 else if (gift.y > canvas.height) {
-                    isGameOver = true;
-                    gameOverMessage.style.display = 'block';
                     gifts.splice(i, 1);
                     i--;
+                    finishGame();
+                    return;
                 }
             }
 
             if (!isGameOver) {
                 animationFrameId = requestAnimationFrame(updateGame);
-            } else {
-                if (giftInterval) clearInterval(giftInterval);
             }
         }
 
         function startGame() {
+            const cfg = DIFFICULTY[currentDifficulty];
+
             score = 0;
             gifts = [];
             isGameOver = false;
@@ -214,12 +293,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (giftInterval) clearInterval(giftInterval);
 
             updateGame();
-            giftInterval = setInterval(createGift, 1500);
+            giftInterval = setInterval(createGift, cfg.spawnInterval);
         }
 
         startGameBtn.addEventListener('click', startGame);
 
-        // 🔚 이 게임에서 정리해야 할 것들 반환
+        // 🔚 cleanup 반환
         return function cleanupFallingGifts() {
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             if (giftInterval) clearInterval(giftInterval);
@@ -229,31 +308,74 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===================================================================
-    // 2. 산타 피하기 게임 (SANTA DODGE)
+    // 2. 산타 피하기 게임 (SANTA DODGE) - 무제한 + 난이도 + 하이스코어
     // ===================================================================
     function loadSantaDodgeGame(gameArea) {
-        const TIME_LIMIT = 30;
+        // 난이도 설정
+        const DIFFICULTY = {
+            easy: {
+                label: '쉬움',
+                spawnInterval: 600,
+                speedMin: 2.0,
+                speedMax: 2.8,
+            },
+            normal: {
+                label: '보통',
+                spawnInterval: 420,
+                speedMin: 2.5,
+                speedMax: 3.3,
+            },
+            hard: {
+                label: '어려움',
+                spawnInterval: 280,
+                speedMin: 3.0,
+                speedMax: 4.0,
+            },
+        };
+        let currentDifficulty = 'normal';
 
         gameArea.innerHTML = `
-            <div id="game-controls" style="margin-bottom: 10px; width: 100%; display: flex; justify-content: space-around; align-items: center;">
-                <button id="startGameBtnDodge" class="button-green">시작하기</button>
-                <div id="timeDisplay" style="color: white; font-size: 1.2em; margin-top: 10px;">남은 시간: ${TIME_LIMIT}초</div>
+            <div id="game-controls" style="margin-bottom: 10px; width: 100%; display: flex; justify-content: space-between; align-items: center; gap:10px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <label style="color:white; font-size:0.9em;">
+                        난이도:
+                        <select id="santaDifficulty" style="margin-left:4px; padding:4px 8px; border-radius:4px;">
+                            <option value="easy">쉬움</option>
+                            <option value="normal" selected>보통</option>
+                            <option value="hard">어려움</option>
+                        </select>
+                    </label>
+                    <button id="startGameBtnDodge" class="button-green" style="margin-left:8px;">시작하기</button>
+                </div>
+                <div style="text-align:right;">
+                    <div id="santaScoreDisplay" style="color: white; font-size: 1.0em;">점수: 0</div>
+                    <div id="santaBestScoreDisplay" style="color: gold; font-size: 0.9em;">최고 점수: 0</div>
+                </div>
             </div>
             <canvas id="santaDodgeCanvas" width="600" height="400" style="background-color: transparent; border: 2px solid white;"></canvas>
-            <div id="resultMessage" style="color: red; font-size: 2em; margin-top: 10px; display: none;"></div>
+            <div id="resultMessage" style="color: red; font-size: 1.5em; margin-top: 10px; display: none;"></div>
         `;
 
         const canvas = document.getElementById('santaDodgeCanvas');
         const ctx = canvas.getContext('2d');
         const startGameBtn = document.getElementById('startGameBtnDodge');
-        const timeDisplay = document.getElementById('timeDisplay');
         const resultMessage = document.getElementById('resultMessage');
+        const santaScoreDisplay = document.getElementById('santaScoreDisplay');
+        const santaBestScoreDisplay = document.getElementById('santaBestScoreDisplay');
+        const diffSelect = document.getElementById('santaDifficulty');
+
+        // 하이스코어 불러오기
+        let bestScore = Number(localStorage.getItem('bestScore_santaDodge')) || 0;
+        santaBestScoreDisplay.textContent = `최고 점수: ${bestScore}`;
+
+        diffSelect.addEventListener('change', () => {
+            currentDifficulty = diffSelect.value;
+        });
 
         let isGameOver = false;
-        let timeRemaining = TIME_LIMIT;
+       let score = 0;
         let animationFrameId = null;
         let santaInterval = null;
-        let dodgeTimer = null;
 
         const player = {
             size: 50,
@@ -278,11 +400,15 @@ document.addEventListener('DOMContentLoaded', () => {
         let santas = [];
 
         function createSanta() {
+            const cfg = DIFFICULTY[currentDifficulty];
+            const size = Math.random() * 15 + 25;
+            const speed = cfg.speedMin + Math.random() * (cfg.speedMax - cfg.speedMin);
+
             const santa = {
-                size: Math.random() * 15 + 25,
-                x: Math.random() * (canvas.width - 30),
+                size: size,
+                x: Math.random() * (canvas.width - size),
                 y: 0,
-                speed: Math.random() * 1.5 + 2.5,
+                speed: speed,
                 color: 'red',
                 draw: function () {
                     if (santaImg.complete) {
@@ -294,37 +420,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
             santas.push(santa);
-        }
-
-        function startTimer() {
-            timeRemaining = TIME_LIMIT;
-            if (timeDisplay) timeDisplay.textContent = `남은 시간: ${timeRemaining}초`;
-
-            if (dodgeTimer) clearInterval(dodgeTimer);
-            dodgeTimer = setInterval(() => {
-                timeRemaining--;
-                if (timeDisplay) timeDisplay.textContent = `남은 시간: ${timeRemaining}초`;
-                if (timeRemaining <= 0) {
-                    endGame(true);
-                }
-            }, 1000);
-        }
-
-        function endGame(isSuccess) {
-            isGameOver = true;
-            if (dodgeTimer) clearInterval(dodgeTimer);
-            if (santaInterval) clearInterval(santaInterval);
-            if (animationFrameId) cancelAnimationFrame(animationFrameId);
-
-            if (isSuccess) {
-                resultMessage.style.color = 'lime';
-                resultMessage.textContent = '🎉 생존 성공! 30초를 버텼습니다! 🎉';
-            } else {
-                resultMessage.style.color = 'red';
-                resultMessage.textContent = 'GAME OVER! 산타에게 잡혔습니다.';
-            }
-            resultMessage.style.display = 'block';
-            startGameBtn.textContent = '다시 시작';
         }
 
         function handleKeyDown(e) {
@@ -340,6 +435,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 player.movingLeft = false;
             } else if (e.key === 'ArrowRight' || e.key === 'd') {
                 player.movingRight = false;
+            }
+        }
+
+        function endGame() {
+            isGameOver = true;
+            if (santaInterval) clearInterval(santaInterval);
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            resultMessage.style.color = 'red';
+            resultMessage.textContent = 'GAME OVER! 산타에게 잡혔습니다.';
+            resultMessage.style.display = 'block';
+            startGameBtn.textContent = '다시 시작';
+
+            // 최고 점수 갱신
+            if (score > bestScore) {
+                bestScore = score;
+                localStorage.setItem('bestScore_santaDodge', String(bestScore));
+                santaBestScoreDisplay.textContent = `최고 점수: ${bestScore}`;
             }
         }
 
@@ -361,15 +474,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 santa.y += santa.speed;
                 santa.draw();
 
+                // 충돌 체크
                 if (
                     player.x < santa.x + santa.size &&
                     player.x + player.size > santa.x &&
                     player.y < santa.y + santa.size &&
                     player.y + player.size > santa.y
                 ) {
-                    endGame(false);
+                    endGame();
                     return;
                 } else if (santa.y > canvas.height) {
+                    // 화면 아래로 나가면 "회피 성공"으로 간주 → 점수 +1
+                    score += 1;
+                    santaScoreDisplay.textContent = `점수: ${score}`;
                     santas.splice(i, 1);
                     i--;
                 }
@@ -379,11 +496,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function startGame() {
+            const cfg = DIFFICULTY[currentDifficulty];
+
             isGameOver = false;
             santas = [];
+            score = 0;
             player.x = canvas.width / 2 - player.size / 2;
             resultMessage.style.display = 'none';
             startGameBtn.textContent = '게임 중...';
+            santaScoreDisplay.textContent = `점수: ${score}`;
 
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('keyup', handleKeyUp);
@@ -394,8 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (santaInterval) clearInterval(santaInterval);
 
             updateGame();
-            startTimer();
-            santaInterval = setInterval(createSanta, 350);
+            santaInterval = setInterval(createSanta, cfg.spawnInterval);
         }
 
         startGameBtn.addEventListener('click', startGame);
@@ -403,25 +523,54 @@ document.addEventListener('DOMContentLoaded', () => {
         return function cleanupSantaDodge() {
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             if (santaInterval) clearInterval(santaInterval);
-            if (dodgeTimer) clearInterval(dodgeTimer);
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('keyup', handleKeyUp);
         };
     }
 
     // ===================================================================
-    // 3. 눈송이 클릭 게임 (SNOW CLICKER)
+    // 3. 눈송이 클릭 게임 (SNOW CLICKER) - 난이도 + 하이스코어
     // ===================================================================
     function loadSnowClickerGame(gameArea) {
-        const MAX_SNOWFLAKES = 10;
-        const GAME_DURATION = 15000;
+        const DIFFICULTY = {
+            easy: {
+                label: '쉬움',
+                duration: 15000,
+                spawnInterval: 800,
+                maxFlakes: 7,
+            },
+            normal: {
+                label: '보통',
+                duration: 15000,
+                spawnInterval: 600,
+                maxFlakes: 10,
+            },
+            hard: {
+                label: '어려움',
+                duration: 12000,
+                spawnInterval: 450,
+                maxFlakes: 12,
+            },
+        };
+        let currentDifficulty = 'normal';
 
         gameArea.innerHTML = `
-            <div id="clicker-controls" style="width: 80%; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-                <button id="startGameBtnClicker" class="button-red">게임 시작</button>
+            <div id="clicker-controls" style="width: 100%; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <label style="color:white; font-size:0.9em;">
+                        난이도:
+                        <select id="clickerDifficulty" style="margin-left:4px; padding:4px 8px; border-radius:4px;">
+                            <option value="easy">쉬움</option>
+                            <option value="normal" selected>보통</option>
+                            <option value="hard">어려움</option>
+                        </select>
+                    </label>
+                    <button id="startGameBtnClicker" class="button-red" style="margin-left:8px;">게임 시작</button>
+                </div>
                 <div style="text-align: right;">
-                    <div id="clickerTimeDisplay" style="color: white; font-size: 1.2em;">시간: 15.00초</div>
-                    <div id="clickerScoreDisplay" style="color: white; font-size: 1.2em;">점수: 0</div>
+                    <div id="clickerTimeDisplay" style="color: white; font-size: 1.0em;">시간: 15.00초</div>
+                    <div id="clickerScoreDisplay" style="color: white; font-size: 1.0em;">점수: 0</div>
+                    <div id="clickerBestScoreDisplay" style="color: gold; font-size: 0.9em;">최고 점수: 0</div>
                 </div>
             </div>
             <div id="snowClickerContainer" style="width: 100%; height: 80%; position: relative; border: 2px dashed #FFF; background-color: #2c3e50; border-radius: 8px;"></div>
@@ -432,15 +581,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById('snowClickerContainer');
         const timeDisplay = document.getElementById('clickerTimeDisplay');
         const scoreDisplay = document.getElementById('clickerScoreDisplay');
+        const bestScoreDisplay = document.getElementById('clickerBestScoreDisplay');
         const resultMessage = document.getElementById('clickerResultMessage');
+        const diffSelect = document.getElementById('clickerDifficulty');
 
         let score = 0;
         let isGameRunning = false;
         let gameTimer = null;
         let snowflakeCreationInterval = null;
 
+        // 하이스코어 불러오기
+        let bestScore = Number(localStorage.getItem('bestScore_snowClicker')) || 0;
+        bestScoreDisplay.textContent = `최고 점수: ${bestScore}`;
+
+        diffSelect.addEventListener('change', () => {
+            currentDifficulty = diffSelect.value;
+        });
+
         function createSnowflake() {
-            if (container.children.length >= MAX_SNOWFLAKES) return;
+            const cfg = DIFFICULTY[currentDifficulty];
+            if (container.children.length >= cfg.maxFlakes) return;
 
             const flake = document.createElement('button');
             flake.classList.add('snowflake-button');
@@ -468,7 +628,27 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(flake);
         }
 
+        function endGame() {
+            isGameRunning = false;
+            if (snowflakeCreationInterval) clearInterval(snowflakeCreationInterval);
+            if (gameTimer) clearInterval(gameTimer);
+            container.style.pointerEvents = 'none';
+            startGameBtn.textContent = '다시 시작';
+
+            // 하이스코어 갱신
+            if (score > bestScore) {
+                bestScore = score;
+                localStorage.setItem('bestScore_snowClicker', String(bestScore));
+                bestScoreDisplay.textContent = `최고 점수: ${bestScore}`;
+            }
+
+            resultMessage.textContent = `게임 종료! 최종 점수: ${score}점`;
+            resultMessage.style.display = 'block';
+        }
+
         function startTimer() {
+            const cfg = DIFFICULTY[currentDifficulty];
+            const GAME_DURATION = cfg.duration;
             const startTime = Date.now();
 
             if (gameTimer) clearInterval(gameTimer);
@@ -477,7 +657,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const remaining = GAME_DURATION - elapsed;
 
                 if (remaining <= 0) {
-                    clearInterval(gameTimer);
                     timeDisplay.textContent = `시간: 0.00초`;
                     endGame();
                     return;
@@ -487,29 +666,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 50);
         }
 
-        function endGame() {
-            isGameRunning = false;
-            if (snowflakeCreationInterval) clearInterval(snowflakeCreationInterval);
-            container.style.pointerEvents = 'none';
-            startGameBtn.textContent = '다시 시작';
-
-            resultMessage.textContent = `게임 종료! 최종 점수: ${score}점`;
-            resultMessage.style.display = 'block';
-        }
-
         function startGame() {
+            const cfg = DIFFICULTY[currentDifficulty];
+
             score = 0;
             isGameRunning = true;
             resultMessage.style.display = 'none';
             scoreDisplay.textContent = `점수: ${score}`;
-            timeDisplay.textContent = `시간: ${(GAME_DURATION / 1000).toFixed(2)}초`;
+            timeDisplay.textContent = `시간: ${(cfg.duration / 1000).toFixed(2)}초`;
             container.innerHTML = '';
             container.style.pointerEvents = 'auto';
             startGameBtn.textContent = '게임 중...';
 
             startTimer();
             if (snowflakeCreationInterval) clearInterval(snowflakeCreationInterval);
-            snowflakeCreationInterval = setInterval(createSnowflake, 600);
+            snowflakeCreationInterval = setInterval(createSnowflake, cfg.spawnInterval);
         }
 
         startGameBtn.addEventListener('click', startGame);
@@ -517,7 +688,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return function cleanupSnowClicker() {
             if (gameTimer) clearInterval(gameTimer);
             if (snowflakeCreationInterval) clearInterval(snowflakeCreationInterval);
-            // 컨테이너 안 버튼은 그냥 DOM에서 사라지므로 따로 이벤트 해제까지는 크게 필요 없음
         };
     }
 
