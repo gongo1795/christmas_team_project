@@ -1,4 +1,4 @@
-/* --- 메인 페이지 전용 스타일 --- */
+/* --- 메인 페이지 용 공용 스타일 --- */
 
 .main-content {
     max-width: 1200px;
@@ -9,14 +9,14 @@
 /* 1. 히어로 섹션 */
 .hero-section {
     position: relative;
-    background-color: var(--color-black-text); 
-    
-    /* 🚨 이 부분을 수정: 절대 경로 대신 상대 경로 사용 */
+    background-color: var(--color-black-text);
+
+    /* 배경 부분을 설정: 겨울 계열 이미지 사용 */
     background-image: url('../assets/images/gemini.png');
-    
-    background-size: cover;        
-    background-position: center;   
-    background-repeat: no-repeat;  
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     color: var(--color-white-snow);
     height: 400px;
     display: flex;
@@ -25,12 +25,59 @@
     text-align: center;
     border-radius: 10px;
     margin-bottom: 40px;
-    box-shadow: var(--shadow-light); 
-    
-    z-index: 1; 
+    box-shadow: var(--shadow-light);
+
+    z-index: 1;
 }
 
-/* --- 이미지 어둡게 만드는 오버레이 추가 (가독성 핵심) --- */
+/* 인트로 모션 (홈 전용) */
+body.home-page .hero-section {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+    animation: heroIntro 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+body.home-page .hero-text h1,
+body.home-page .hero-text p,
+body.home-page .hero-text .countdown-timer {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: textFloat 0.9s ease-out forwards;
+}
+
+body.home-page .hero-text h1 { animation-delay: 0.15s; }
+body.home-page .hero-text p { animation-delay: 0.3s; }
+body.home-page .hero-text .countdown-timer { animation-delay: 0.05s; }
+
+body.home-page .feature-cards .card {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+    animation: cardPop 0.8s ease-out forwards;
+}
+
+body.home-page .feature-cards .card:nth-child(1) { animation-delay: 0.45s; }
+body.home-page .feature-cards .card:nth-child(2) { animation-delay: 0.55s; }
+body.home-page .feature-cards .card:nth-child(3) { animation-delay: 0.65s; }
+
+@keyframes heroIntro {
+    0% { opacity: 0; transform: translateY(18px) scale(0.97); }
+    60% { opacity: 1; transform: translateY(0) scale(1.02); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes textFloat {
+    0% { opacity: 0; transform: translateY(12px); }
+    60% { opacity: 1; transform: translateY(-4px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cardPop {
+    0% { opacity: 0; transform: translateY(20px) scale(0.96); }
+    60% { opacity: 1; transform: translateY(-2px) scale(1.01); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* --- 오버레이: 어두운 배경 (0.4투명도, 텍스트 대비) --- */
 .hero-section::before {
     content: '';
     position: absolute;
@@ -38,24 +85,24 @@
     left: 0;
     width: 100%;
     height: 100%;
-    /* 반투명 검은색 배경 (0.4는 투명도. 이 숫자를 조절해서 밝기를 바꿀 수 있습니다) */
-    background-color: rgba(0, 0, 0, 0.4); 
+    /* 반투명검은색 배경 (0.4투명도 설정) */
+    background-color: rgba(0, 0, 0, 0.4);
     border-radius: 10px;
-    z-index: 1; /* 오버레이는 이미지 위에, 텍스트 아래에 위치 */
+    z-index: 1; /* 오버레이가 이미지 위에, 텍스트 아래 */
 }
 
-/* 텍스트 컨테이너 (.hero-text)에 z-index 설정 */
+/* 텍스트 컨테이너 (.hero-text)의 z-index 설정 */
 .hero-text {
-    position: relative; /* z-index를 적용하려면 position 속성이 필요합니다. */
-    z-index: 2; /* 오버레이보다 높게 설정하여 텍스트가 앞에 보이게 함 */
+    position: relative; /* z-index를 쓰려면 position 필수 */
+    z-index: 2; /* 오버레이보다 높게 설정해 텍스트가 위에 보이도록 */
 }
 
 .hero-text h1 {
     font-size: 3em;
-    color: var(--color-gold-accent); 
+    color: var(--color-gold-accent);
     margin-bottom: 10px;
-    /* 👈 텍스트 그림자를 더 진하게 하여 대비 강화 */
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.9), 2px 2px var(--color-red-christmas); 
+    /* 큰 텍스트의 그림자를 진하게 처리 */
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.9), 2px 2px var(--color-red-christmas);
 }
 
 .hero-text p {
@@ -67,26 +114,26 @@
     margin: 0 10px;
 }
 
-/* NEW: D-Day 카운터 스타일 */
-.countdown-timer { 
-    /* 폰트를 한글 폰트(Hahmlet)로 변경하고 크기를 줄입니다. */
-    font-family: var(--font-primary); /* Hahmlet 폰트 적용 */
+/* NEW: D-Day 카운트다운 */
+.countdown-timer {
+    /* 폰트를 메인 폰트(Hahmlet)로 변경 */
+    font-family: var(--font-primary); /* Hahmlet 폰트 사용 */
     font-size: 1.5em; /* 크기 축소 */
     font-weight: 700;
-    
+
     color: var(--color-white-snow); /* 흰색 글씨로 변경 */
-    
-    /* ⚠️ 배경색, 패딩, 박스 그림자 제거 */
-    background-color: transparent; 
+
+    /* 배경은 투명, 박스 그림자 제거 */
+    background-color: transparent;
     padding: 0;
-    box-shadow: none; 
-    
-    margin: 0 auto 10px auto; /* h1 위에 위치하도록 하단 마진 추가 */
-    display: block; /* 블록 요소로 변경하여 중앙 정렬 유지 */
+    box-shadow: none;
+
+    margin: 0 auto 10px auto; /* h1 아래에 위치하고 가운데 정렬 */
+    display: block; /* 블록 요소로 변경하여 중앙 배치 */
     text-align: center;
     line-height: 1.4;
-    
-    /* ✨ 가독성을 위한 진한 텍스트 그림자 추가 */
+
+    /* 시각효과를 위한 진한 텍스트 그림자 */
     text-shadow: 0 0 5px #000000, 0 0 10px rgba(0, 0, 0, 0.8);
 }
 
@@ -96,15 +143,15 @@
     justify-content: space-around;
     gap: 30px;
     padding: 20px 0;
-    /* 🚨 필수 추가: 화면이 좁아지면 카드가 아래로 내려가도록 설정 */
+    /* 화면 너비 축소: 화면이 좁아지면 카드가 줄려가도록 설정 */
     flex-wrap: wrap;
 }
 
 .card {
-    flex: 1 1 300px; /* 최소 300px을 유지하고 공간이 남으면 늘어남 */
+    flex: 1 1 300px; /* 최소 300px까지 줄어들고 공간을 채움 */
     min-width: 300px;
     background-color: #FFFFFF;
-    color: var(--color-black-text); /* 👈 이 라인을 추가합니다. */
+    color: var(--color-black-text); /* 흰 배경이므로 검정 텍스트 */
     padding: 30px;
     border-radius: 10px;
     box-shadow: var(--shadow-light);
@@ -125,21 +172,21 @@
     margin-bottom: 15px;
 }
 
-/* 🚨 미디어 쿼리 추가: 태블릿/모바일 (768px 이하) */
+/* 화면 미디어쿼리 추가: 모바일(768px 이하) */
 @media (max-width: 768px) {
     .feature-cards {
-        flex-direction: column; /* 카드를 수직으로 배열 */
+        flex-direction: column; /* 카드가 수직으로 배열 */
         gap: 20px;
     }
-    
+
     .card {
-        width: 100%; /* 너비를 꽉 채우도록 설정 */
+        width: 100%; /* 화면폭에맞춰 채움 */
         min-width: 0; /* min-width 제한 해제 */
     }
-    
+
     /* 히어로 섹션 높이와 텍스트 크기 조정 */
     .hero-section {
-        height: 300px; 
+        height: 300px;
     }
     .hero-text h1 {
         font-size: 2.5em;
