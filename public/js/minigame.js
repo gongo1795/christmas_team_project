@@ -2,18 +2,18 @@
 // 공통 이미지 로드
 // =========================
 const giftBasketImg = new Image();
-giftBasketImg.src = 'assets/images/basket.png';
+giftBasketImg.src = '../assets/images/basket.png';
 
 const santaImg = new Image();
-santaImg.src = 'assets/images/santa.png';
+santaImg.src = '../assets/images/santa.png';
 
 const rudolphImg = new Image();
-rudolphImg.src = 'assets/images/rudolph.png';
+rudolphImg.src = '../assets/images/rudolph.png';
 
 const GIFT_IMAGE_SOURCES = [
-    'assets/images/gift_red.png',
-    'assets/images/gift_blue.png',
-    'assets/images/gift_green.png',
+    '../assets/images/gift_red.png',
+    '../assets/images/gift_blue.png',
+    '../assets/images/gift_green.png',
 ];
 
 const fallingGiftImgs = [];
@@ -30,27 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameSelection = document.querySelector('.game-selection');
     const gameArea = document.getElementById('game-area');
 
-    // 🔑 현재 실행 중인 게임 정리용
+    // 🔑 현재 실행 중인 게임을 정리하기 위한 cleanup 함수
     let currentCleanup = null;
 
-    // 공통: Firebase 사용 가능 여부 체크
-    function hasDb(listEl) {
-        if (!window.db) {
-            if (listEl) {
-                listEl.innerHTML = '<li>Firebase 설정이 없어 랭킹 기능을 사용할 수 없어요.</li>';
-            }
-            console.warn('window.db가 없습니다. Firebase 초기화를 확인하세요.');
-            return false;
-        }
-        return true;
-    }
-
-    // --- 게임 선택 카드 클릭 핸들러 ---
+    // --- 게임 선택 핸들러 ---
     gameSelection.addEventListener('click', (e) => {
         const card = e.target.closest('.game-card');
         if (!card) return;
 
-        // 이전 게임 정리
+        // 🔥 이전 게임 정리
         if (currentCleanup) {
             currentCleanup();
             currentCleanup = null;
@@ -85,13 +73,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Firebase 사용 가능 여부 체크
+    function hasDb(listEl) {
+        if (!window.db) {
+            if (listEl) {
+                listEl.innerHTML =
+                    '<li>Firebase 설정이 없어 랭킹 기능을 사용할 수 없어요.</li>';
+            }
+            console.warn('window.db가 없습니다. Firebase 초기화를 확인하세요.');
+            return false;
+        }
+        return true;
+    }
+
     // ===================================================================
     // 1. 선물 잡기 게임 (FALLING GIFTS)
-    //    - 난이도 + 내 컴 최고 점수(localStorage)
-    //    - 전체 랭킹(Firestore: falling-gifts-scores)
+    //    - 난이도 조정 + 범위 확대 + 하이스코어(local) + 랭킹(Firestore)
     // ===================================================================
     function loadFallingGiftsGame(gameArea) {
+        // 🔧 네가 튜닝해둔 난이도 값
         const DIFFICULTY = {
+            // 새 쉬움 = 기존 보통 느낌
             easy: {
                 label: '쉬움',
                 spawnInterval: 1300,
@@ -99,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 speedMax: 2.1,
                 spawnRange: 320,
             },
+            // 새 보통 = 기존 어려움보다 약간 더 빡셈
             normal: {
                 label: '보통',
                 spawnInterval: 950,
@@ -106,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 speedMax: 2.7,
                 spawnRange: 420,
             },
+            // 새 어려움 = 하드코어 모드
             hard: {
                 label: '어려움',
                 spawnInterval: 700,
@@ -116,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         let currentDifficulty = 'normal';
 
+        // 화면 구성
         gameArea.innerHTML = `
             <div id="game-controls" style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:10px;">
                 <div style="display:flex; align-items:center; gap:8px;">
@@ -153,8 +158,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const diffSelect = document.getElementById('giftDifficulty');
         const resetFallingBestBtn = document.getElementById('resetFallingBest');
 
-        // 내 컴퓨터 최고 점수
-        let bestScore = Number(localStorage.getItem('bestScore_fallingGifts')) || 0;
+        // 내 컴퓨터 기준 최고 점수
+        let bestScore =
+            Number(localStorage.getItem('bestScore_fallingGifts')) || 0;
         bestScoreDisplay.textContent = `최고 점수(내 컴퓨터): ${bestScore}`;
 
         resetFallingBestBtn.addEventListener('click', () => {
@@ -163,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             bestScoreDisplay.textContent = '최고 점수(내 컴퓨터): 0';
         });
 
-        // ===== 🎄 Firestore 랭킹 영역 =====
+        // 🎄 선물 잡기 랭킹 영역 (Firestore)
         const rankingSection = document.createElement('section');
         rankingSection.id = 'fallingRanking';
         rankingSection.className = 'ranking-section';
@@ -179,12 +185,13 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         gameArea.appendChild(rankingSection);
 
-        const rankingListEl = rankingSection.querySelector('#fallingRankingList');
-        const refreshRankingBtn = rankingSection.querySelector('#refreshFallingRanking');
+        const rankingListEl =
+            rankingSection.querySelector('#fallingRankingList');
+        const refreshRankingBtn =
+            rankingSection.querySelector('#refreshFallingRanking');
 
         async function loadFallingRanking() {
             if (!hasDb(rankingListEl)) return;
-
             rankingListEl.innerHTML = '<li>불러오는 중...</li>';
 
             try {
@@ -195,7 +202,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     .get();
 
                 if (snapshot.empty) {
-                    rankingListEl.innerHTML = '<li>아직 등록된 점수가 없어요.</li>';
+                    rankingListEl.innerHTML =
+                        '<li>아직 등록된 점수가 없어요.</li>';
                     return;
                 }
 
@@ -217,7 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 rankingListEl.innerHTML = items.join('');
             } catch (error) {
                 console.error('선물 잡기 랭킹 불러오기 오류', error);
-                rankingListEl.innerHTML = '<li>랭킹을 불러오는 중 오류가 발생했어요.</li>';
+                rankingListEl.innerHTML =
+                    '<li>랭킹을 불러오는 중 오류가 발생했어요.</li>';
             }
         }
 
@@ -225,7 +234,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (scoreToSave <= 0) return;
             if (!hasDb(rankingListEl)) return;
 
-            const storedNickname = localStorage.getItem('fallingNickname') || '';
+            const storedNickname =
+                localStorage.getItem('fallingNickname') || '';
 
             if (!confirm('이번 점수를 선물 잡기 랭킹에 등록할까요?')) return;
             let nickname = prompt(
@@ -278,7 +288,13 @@ document.addEventListener('DOMContentLoaded', () => {
             movingRight: false,
             draw: function () {
                 if (giftBasketImg.complete) {
-                    ctx.drawImage(giftBasketImg, this.x, this.y, this.width, this.height);
+                    ctx.drawImage(
+                        giftBasketImg,
+                        this.x,
+                        this.y,
+                        this.width,
+                        this.height
+                    );
                 } else {
                     ctx.fillStyle = this.color;
                     ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -291,7 +307,9 @@ document.addEventListener('DOMContentLoaded', () => {
         function createGift() {
             const cfg = DIFFICULTY[currentDifficulty];
             const randomGiftImg =
-                fallingGiftImgs[Math.floor(Math.random() * fallingGiftImgs.length)];
+                fallingGiftImgs[
+                    Math.floor(Math.random() * fallingGiftImgs.length)
+                ];
             const size = Math.random() * 25 + 30;
 
             const range = cfg.spawnRange;
@@ -304,7 +322,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (maxX > canvas.width - size) maxX = canvas.width - size;
 
             const xPos = minX + Math.random() * (maxX - minX || 1);
-            const speed = cfg.speedMin + Math.random() * (cfg.speedMax - cfg.speedMin);
+            const speed =
+                cfg.speedMin +
+                Math.random() * (cfg.speedMax - cfg.speedMin);
 
             const gift = {
                 size: size,
@@ -315,10 +335,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 image: randomGiftImg,
                 draw: function () {
                     if (this.image.complete) {
-                        ctx.drawImage(this.image, this.x, this.y, this.size, this.size);
+                        ctx.drawImage(
+                            this.image,
+                            this.x,
+                            this.y,
+                            this.size,
+                            this.size
+                        );
                     } else {
                         ctx.fillStyle = this.color;
-                        ctx.fillRect(this.x, this.y, this.size, this.size);
+                        ctx.fillRect(
+                            this.x,
+                            this.y,
+                            this.size,
+                            this.size
+                        );
                     }
                 },
             };
@@ -351,7 +382,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (score > bestScore) {
                 bestScore = score;
-                localStorage.setItem('bestScore_fallingGifts', String(bestScore));
+                localStorage.setItem(
+                    'bestScore_fallingGifts',
+                    String(bestScore)
+                );
                 bestScoreDisplay.textContent = `최고 점수(내 컴퓨터): ${bestScore}`;
             }
 
@@ -432,21 +466,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===================================================================
     // 2. 산타 피하기 게임 (SANTA DODGE)
+    //    - 난이도 + 하이스코어(local) + 랭킹(Firestore)
     // ===================================================================
     function loadSantaDodgeGame(gameArea) {
         const DIFFICULTY = {
+            // 새 쉬움 = 기존 보통 정도
             easy: {
                 label: '쉬움',
                 spawnInterval: 420,
                 speedMin: 2.5,
                 speedMax: 3.3,
             },
+            // 새 보통 = 기존 어려움급
             normal: {
                 label: '보통',
                 spawnInterval: 300,
                 speedMin: 3.0,
                 speedMax: 4.0,
             },
+            // 새 어려움 = 더 빡세게
             hard: {
                 label: '어려움',
                 spawnInterval: 210,
@@ -489,11 +527,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const startGameBtn = document.getElementById('startGameBtnDodge');
         const resultMessage = document.getElementById('resultMessage');
         const santaScoreDisplay = document.getElementById('santaScoreDisplay');
-        const santaBestScoreDisplay = document.getElementById('santaBestScoreDisplay');
+        const santaBestScoreDisplay =
+            document.getElementById('santaBestScoreDisplay');
         const diffSelect = document.getElementById('santaDifficulty');
         const resetSantaBestBtn = document.getElementById('resetSantaBest');
 
-        let bestScore = Number(localStorage.getItem('bestScore_santaDodge')) || 0;
+        let bestScore =
+            Number(localStorage.getItem('bestScore_santaDodge')) || 0;
         santaBestScoreDisplay.textContent = `최고 점수(내 컴퓨터): ${bestScore}`;
 
         resetSantaBestBtn.addEventListener('click', () => {
@@ -502,7 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
             santaBestScoreDisplay.textContent = '최고 점수(내 컴퓨터): 0';
         });
 
-        // 🎅 랭킹 영역
+        // 🎅 산타 피하기 랭킹
         const rankingSection = document.createElement('section');
         rankingSection.id = 'santaRanking';
         rankingSection.className = 'ranking-section';
@@ -518,8 +558,10 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         gameArea.appendChild(rankingSection);
 
-        const rankingListEl = rankingSection.querySelector('#santaRankingList');
-        const refreshRankingBtn = rankingSection.querySelector('#refreshSantaRanking');
+        const rankingListEl =
+            rankingSection.querySelector('#santaRankingList');
+        const refreshRankingBtn =
+            rankingSection.querySelector('#refreshSantaRanking');
 
         async function loadSantaRanking() {
             if (!hasDb(rankingListEl)) return;
@@ -534,7 +576,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     .get();
 
                 if (snapshot.empty) {
-                    rankingListEl.innerHTML = '<li>아직 등록된 점수가 없어요.</li>';
+                    rankingListEl.innerHTML =
+                        '<li>아직 등록된 점수가 없어요.</li>';
                     return;
                 }
 
@@ -556,7 +599,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 rankingListEl.innerHTML = items.join('');
             } catch (error) {
                 console.error('산타 피하기 랭킹 불러오기 오류', error);
-                rankingListEl.innerHTML = '<li>랭킹을 불러오는 중 오류가 발생했어요.</li>';
+                rankingListEl.innerHTML =
+                    '<li>랭킹을 불러오는 중 오류가 발생했어요.</li>';
             }
         }
 
@@ -564,7 +608,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (scoreToSave <= 0) return;
             if (!hasDb(rankingListEl)) return;
 
-            const storedNickname = localStorage.getItem('santaNickname') || '';
+            const storedNickname =
+                localStorage.getItem('santaNickname') || '';
 
             if (!confirm('이번 점수를 산타 피하기 랭킹에 등록할까요?')) return;
             let nickname = prompt(
@@ -616,7 +661,13 @@ document.addEventListener('DOMContentLoaded', () => {
             movingRight: false,
             draw: function () {
                 if (rudolphImg.complete) {
-                    ctx.drawImage(rudolphImg, this.x, this.y, this.size, this.size);
+                    ctx.drawImage(
+                        rudolphImg,
+                        this.x,
+                        this.y,
+                        this.size,
+                        this.size
+                    );
                 } else {
                     ctx.fillStyle = this.color;
                     ctx.beginPath();
@@ -637,7 +688,9 @@ document.addEventListener('DOMContentLoaded', () => {
         function createSanta() {
             const cfg = DIFFICULTY[currentDifficulty];
             const size = Math.random() * 15 + 25;
-            const speed = cfg.speedMin + Math.random() * (cfg.speedMax - cfg.speedMin);
+            const speed =
+                cfg.speedMin +
+                Math.random() * (cfg.speedMax - cfg.speedMin);
 
             const santa = {
                 size: size,
@@ -647,10 +700,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 color: 'red',
                 draw: function () {
                     if (santaImg.complete) {
-                        ctx.drawImage(santaImg, this.x, this.y, this.size, this.size);
+                        ctx.drawImage(
+                            santaImg,
+                            this.x,
+                            this.y,
+                            this.size,
+                            this.size
+                        );
                     } else {
                         ctx.fillStyle = this.color;
-                        ctx.fillRect(this.x, this.y, this.size, this.size);
+                        ctx.fillRect(
+                            this.x,
+                            this.y,
+                            this.size,
+                            this.size
+                        );
                     }
                 },
             };
@@ -685,7 +749,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (score > bestScore) {
                 bestScore = score;
-                localStorage.setItem('bestScore_santaDodge', String(bestScore));
+                localStorage.setItem(
+                    'bestScore_santaDodge',
+                    String(bestScore)
+                );
                 santaBestScoreDisplay.textContent = `최고 점수(내 컴퓨터): ${bestScore}`;
             }
 
@@ -766,21 +833,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===================================================================
     // 3. 눈송이 클릭 게임 (SNOW CLICKER)
+    //    - 난이도 + 하이스코어(local) + 랭킹(Firestore)
     // ===================================================================
     function loadSnowClickerGame(gameArea) {
         const DIFFICULTY = {
+            // 새 쉬움 = 기존 보통
             easy: {
                 label: '쉬움',
                 duration: 15000,
                 spawnInterval: 600,
                 maxFlakes: 10,
             },
+            // 새 보통 = 기존 어려움급
             normal: {
                 label: '보통',
                 duration: 12000,
                 spawnInterval: 450,
                 maxFlakes: 12,
             },
+            // 새 어려움 = 더 짧은 시간 + 더 많은 눈송이
             hard: {
                 label: '어려움',
                 duration: 10000,
@@ -823,8 +894,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById('snowClickerContainer');
         const timeDisplay = document.getElementById('clickerTimeDisplay');
         const scoreDisplay = document.getElementById('clickerScoreDisplay');
-        const bestScoreDisplay = document.getElementById('clickerBestScoreDisplay');
-        const resultMessage = document.getElementById('clickerResultMessage');
+        const bestScoreDisplay =
+            document.getElementById('clickerBestScoreDisplay');
+        const resultMessage =
+            document.getElementById('clickerResultMessage');
         const diffSelect = document.getElementById('clickerDifficulty');
         const resetClickerBestBtn = document.getElementById('resetClickerBest');
 
@@ -833,7 +906,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let gameTimer = null;
         let snowflakeCreationInterval = null;
 
-        let bestScore = Number(localStorage.getItem('bestScore_snowClicker')) || 0;
+        let bestScore =
+            Number(localStorage.getItem('bestScore_snowClicker')) || 0;
         bestScoreDisplay.textContent = `최고 점수(내 컴퓨터): ${bestScore}`;
 
         resetClickerBestBtn.addEventListener('click', () => {
@@ -842,7 +916,7 @@ document.addEventListener('DOMContentLoaded', () => {
             bestScoreDisplay.textContent = '최고 점수(내 컴퓨터): 0';
         });
 
-        // ❄ 랭킹 영역
+        // ❄ 눈송이 클릭 랭킹
         const rankingSection = document.createElement('section');
         rankingSection.id = 'clickerRanking';
         rankingSection.className = 'ranking-section';
@@ -858,8 +932,10 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         gameArea.appendChild(rankingSection);
 
-        const rankingListEl = rankingSection.querySelector('#clickerRankingList');
-        const refreshRankingBtn = rankingSection.querySelector('#refreshClickerRanking');
+        const rankingListEl =
+            rankingSection.querySelector('#clickerRankingList');
+        const refreshRankingBtn =
+            rankingSection.querySelector('#refreshClickerRanking');
 
         async function loadClickerRanking() {
             if (!hasDb(rankingListEl)) return;
@@ -874,7 +950,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     .get();
 
                 if (snapshot.empty) {
-                    rankingListEl.innerHTML = '<li>아직 등록된 점수가 없어요.</li>';
+                    rankingListEl.innerHTML =
+                        '<li>아직 등록된 점수가 없어요.</li>';
                     return;
                 }
 
@@ -896,7 +973,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 rankingListEl.innerHTML = items.join('');
             } catch (error) {
                 console.error('눈송이 클릭 랭킹 불러오기 오류', error);
-                rankingListEl.innerHTML = '<li>랭킹을 불러오는 중 오류가 발생했어요.</li>';
+                rankingListEl.innerHTML =
+                    '<li>랭킹을 불러오는 중 오류가 발생했어요.</li>';
             }
         }
 
@@ -904,7 +982,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (scoreToSave <= 0) return;
             if (!hasDb(rankingListEl)) return;
 
-            const storedNickname = localStorage.getItem('snowClickerNickname') || '';
+            const storedNickname =
+                localStorage.getItem('snowClickerNickname') || '';
 
             if (!confirm('이번 점수를 눈송이 클릭 랭킹에 등록할까요?')) return;
             let nickname = prompt(
@@ -973,14 +1052,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function endGame() {
             isGameRunning = false;
-            if (snowflakeCreationInterval) clearInterval(snowflakeCreationInterval);
+            if (snowflakeCreationInterval)
+                clearInterval(snowflakeCreationInterval);
             if (gameTimer) clearInterval(gameTimer);
             container.style.pointerEvents = 'none';
             startGameBtn.textContent = '다시 시작';
 
             if (score > bestScore) {
                 bestScore = score;
-                localStorage.setItem('bestScore_snowClicker', String(bestScore));
+                localStorage.setItem(
+                    'bestScore_snowClicker',
+                    String(bestScore)
+                );
                 bestScoreDisplay.textContent = `최고 점수(내 컴퓨터): ${bestScore}`;
             }
 
@@ -1008,7 +1091,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                timeDisplay.textContent = `시간: ${(remaining / 1000).toFixed(2)}초`;
+                timeDisplay.textContent = `시간: ${(remaining / 1000).toFixed(
+                    2
+                )}초`;
             }, 50);
         }
 
@@ -1019,26 +1104,33 @@ document.addEventListener('DOMContentLoaded', () => {
             isGameRunning = true;
             resultMessage.style.display = 'none';
             scoreDisplay.textContent = `점수: ${score}`;
-            timeDisplay.textContent = `시간: ${(cfg.duration / 1000).toFixed(2)}초`;
+            timeDisplay.textContent = `시간: ${(cfg.duration / 1000).toFixed(
+                2
+            )}초`;
             container.innerHTML = '';
             container.style.pointerEvents = 'auto';
             startGameBtn.textContent = '게임 중...';
 
             startTimer();
-            if (snowflakeCreationInterval) clearInterval(snowflakeCreationInterval);
-            snowflakeCreationInterval = setInterval(createSnowflake, cfg.spawnInterval);
+            if (snowflakeCreationInterval)
+                clearInterval(snowflakeCreationInterval);
+            snowflakeCreationInterval = setInterval(
+                createSnowflake,
+                cfg.spawnInterval
+            );
         }
 
         startGameBtn.addEventListener('click', startGame);
 
         return function cleanupSnowClicker() {
             if (gameTimer) clearInterval(gameTimer);
-            if (snowflakeCreationInterval) clearInterval(snowflakeCreationInterval);
+            if (snowflakeCreationInterval)
+                clearInterval(snowflakeCreationInterval);
         };
     }
 
     // =========================
-    // 눈송이 버튼 기본 스타일
+    // 눈송이 버튼 기본 스타일 (한 번만 추가)
     // =========================
     const style = document.createElement('style');
     style.textContent = `
