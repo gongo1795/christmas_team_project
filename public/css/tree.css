@@ -7,20 +7,17 @@
     text-align: center;
 }
 
-/* --- Bangers 폰트 크기 조정 (깨짐 방지) --- */
-
 /* 페이지 메인 제목 (h1) - 한글은 Hahmlet */
 .tree-main h1 {
     font-family: var(--font-hahmlet);  /* 또는 var(--font-primary); */
-    font-size: 2.8em; 
+    font-size: 2.8em;
     margin-bottom: 5px;
 }
-
 
 /* 장식 목록 제목 (h2) */
 .ornament-palette h2 {
     font-family: var(--font-bangers);
-    font-size: 1.6em; 
+    font-size: 1.6em;
     color: var(--color-black-text);
     border-bottom: 2px dashed var(--color-green-christmas);
     padding-bottom: 10px;
@@ -35,12 +32,12 @@
 
 /* 1. 장식 팔레트 */
 .ornament-palette {
-    flex: 0 0 200px; 
+    flex: 0 0 200px;
     background-color: #FFF;
     padding: 20px;
     border-radius: 10px;
     box-shadow: var(--shadow-light);
-    height: 600px; 
+    height: 600px;
 }
 
 .ornaments-list {
@@ -52,44 +49,51 @@
 
 /* --- 장식 아이템 기본 스타일 (이모지용 재정의) --- */
 .ornament {
-    width: 50px; 
-    height: 50px; 
-    border-radius: 5px; 
-    background-color: transparent !important; 
-    box-shadow: none !important; 
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    background-color: transparent !important;
+    box-shadow: none !important;
     cursor: grab;
     transition: transform 0.1s;
 
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2em; 
+    font-size: 2em;
 }
 
 .ornament:active {
     cursor: grabbing;
 }
 
-/* 장식 종류별 이모지 스타일 (display: inline-block 추가하여 렌더링 안정화) */
-.ball-red::before { content: "⭐️"; }  
+/* 장식 종류별 이모지 스타일 */
+.ball-red::before { content: "⭐️"; }
 .ball-green::before { content: "❤️"; }
 .star-gold::before { content: "🤎"; }
 .candy-cane::before { content: "🩶"; }
 .gift-box::before { content: "🟠"; }
 
-
-/* 2. 트리 영역 */
+/* 2. 트리 영역 (트리 뒤 흰 배경 → 이미지) */
+#tree-area,
 .tree-area {
     flex: 1;
     position: relative;
     height: 600px;
-    background-color: #eee; 
-    border: 3px solid var(--color-red-christmas); /* 빨간색 실선 */
+
+    border: 3px solid var(--color-red-christmas);
     border-radius: 10px;
-    overflow: hidden; 
-    background: linear-gradient(to bottom, #F8F8F8 0%, #DCDCDC 100%);
+    overflow: hidden;
+
+    /* 🔽 트리 뒤 배경 이미지 */
+    background-color: #eee; /* 이미지 못 불러올 때 대비용 */
+    background-image: url("../assets/images/tree_bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
+/* 초록색 트리 모양 (장식들이 올라가는 부분) */
 .main-tree {
     position: absolute;
     bottom: 0;
@@ -97,8 +101,11 @@
     transform: translateX(-50%);
     width: 80%;
     height: 90%;
+
     background-color: var(--color-green-christmas);
-    clip-path: polygon(50% 0%, 100% 100%, 0% 100%); 
+
+    /* 삼각형 + 살짝 둥근 밑부분 */
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
     border-radius: 10% / 50%;
 }
 
@@ -109,21 +116,21 @@
 
 /* --- 공통 모달(팝업) 스타일 --- */
 .modal {
-    display: none; 
+    display: none;
     position: fixed;
-    z-index: 2000; 
+    z-index: 2000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.7); 
+    background-color: rgba(0,0,0,0.7);
 }
 
 .modal-content {
     background-color: var(--color-white-snow);
     color: var(--color-black-text);
-    margin: 15% auto; 
+    margin: 15% auto;
     padding: 30px;
     border-radius: 10px;
     width: 90%;
@@ -166,7 +173,7 @@
     padding: 10px;
     border: 2px solid var(--color-green-christmas);
     border-radius: 5px;
-    resize: none; 
+    resize: none;
     font-family: var(--font-primary);
     font-size: 1em;
     background-color: white;
@@ -175,7 +182,7 @@
 
 /* --- 메모 열람 텍스트 스타일 --- */
 #view-memo-text {
-    white-space: pre-wrap; 
+    white-space: pre-wrap;
     font-size: 1.1em;
     padding: 10px;
     background-color: #f7f7f7;
@@ -186,48 +193,31 @@
 /* --- 모든 메모 장식에 공통 적용 --- */
 .ornament[data-memo] {
     cursor: pointer !important;
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 2px rgba(0,0,0,0.5); 
-    border-radius: 50%; 
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 2px rgba(0,0,0,0.5);
+    border-radius: 50%;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .ornament[data-memo]:hover {
-    transform: scale(1.15); 
+    transform: scale(1.15);
 }
 
-/* tree.css 파일 */
-
-/* tree.css 파일 내, 768px 이하 미디어 쿼리 수정 */
+/* 768px 이하 반응형 정렬 */
 @media (max-width: 768px) {
     .decorator-container {
-        flex-direction: column; /* 가로 배열 -> 세로 배열로 변경 */
+        flex-direction: column; /* 가로 → 세로 */
         gap: 20px;
     }
-    
-    /* 1. 장식 팔레트 */
+
     .ornament-palette {
-        flex: none; /* Flex 속성 해제 */
-        width: 100%; /* 너비를 꽉 채우도록 변경 (이전 수정안 유지) */
-        height: auto; /* 높이를 자동으로 변경 */
-        order: 2; /* 순서 변경 */
+        flex: none;
+        width: 100%;
+        height: auto;
+        order: 2; /* 팔레트가 아래로 내려가게 */
     }
-    
-    /* 2. 트리 영역 */
-  /* 트리가 들어가는 큰 흰색 배경 영역 */
-.tree-area {
-    flex: 1;
-    position: relative;
-    height: 600px;
-    border: 3px solid var(--color-red-christmas); /* 빨간 테두리 */
-    border-radius: 10px;
-    overflow: hidden;
 
-    /* 여기부터가 변경된 부분 (흰 배경 → 이미지) */
-    background-color: #eee; /* 혹시 이미지를 못 불러올 때 대비용 */
-    background-image: url('../assets/images/tree_bg.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
+    #tree-area,
+    .tree-area {
+        height: 450px; /* 모바일에서 높이만 조금 줄이기 (원하면 조절) */
+    }
 }
