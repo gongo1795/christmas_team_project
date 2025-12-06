@@ -175,3 +175,44 @@
     pointer-events: none; /* 클릭을 방해하지 않도록 설정 */
     z-index: 10;
 }
+
+/* 🎄 Falling Gifts 랭킹 영역 */
+.ranking-section {
+    width: 100%;
+    margin-top: 16px;
+    background-color: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+}
+
+.ranking-section h3 {
+    margin: 0 0 6px 0;
+    font-size: 1rem;
+    color: #ffdf7b;
+}
+
+.ranking-desc {
+    margin: 0 0 8px 0;
+    opacity: 0.9;
+}
+
+.ranking-controls {
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ranking-list {
+    margin: 0;
+    padding-left: 1.1rem;
+}
+
+.ranking-list li {
+    margin-bottom: 4px;
+}
+
+
+
