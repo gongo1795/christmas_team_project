@@ -1,102 +1,184 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>크리스마스 트리 꾸미기</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Hahmlet:wght@100..900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>트리 꾸미기 | Happy Christmas</title>
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/tree.css">
+  <!-- 폰트 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bangers&family=Hahmlet:wght@100..900&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- 공통 스타일 + 트리 전용 스타일 -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/tree.css" />
 </head>
-<body class="tree-page">
-    <div id="snow-container" class="snow-container"></div>
+<body>
+  <div id="snow-container" class="snow-container"></div>
 
-    <header class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo"><a href="index.html">Happy Christmas</a></div>
-            <nav class="nav-links">
-                <a href="index.html">메인</a>
-                <a href="letter.html">편지 보내기</a>
-                <a href="tree-decorator.html">트리 꾸미기</a>
-                <a href="minigame.html">미니게임</a>
-            </nav>
-        </div>
-    </header>
-
-    <main class="tree-main">
-        <h1>우리만의 크리스마스 트리를 꾸며보세요</h1>
-        
-        <div class="decorator-container">
-            <aside class="ornament-palette">
-                <h2>장식 목록</h2>
-                <div class="ornaments-list">
-                    <div class="ornament ball-red" draggable="true" data-type="ball-red"></div>
-                    <div class="ornament ball-green" draggable="true" data-type="ball-green"></div>
-                    <div class="ornament star-gold" draggable="true" data-type="star-gold"></div>
-                    <div class="ornament candy-cane" draggable="true" data-type="candy-cane"></div>
-                    <div class="ornament gift-box" draggable="true" data-type="gift-box"></div>
-                    <div class="ornament memo-note" draggable="true" data-type="memo-note"></div>
-                </div>
-                <button id="reset-button" class="button-red">모두 지우기</button>
-            </aside>
-            
-            <section id="tree-area" class="tree-area">
-                <div class="main-tree"></div>
-            </section>
-        </div>
-    </main>
-    
-    <!-- 메모 입력 모달 -->
-    <div id="input-modal" class="modal">
-        <div class="modal-content">
-            <span id="close-input-modal" class="close-button">&times;</span>
-            <h2>메모 남기기 📝</h2>
-            <form id="memo-input-form">
-                <textarea id="input-memo-text" placeholder="여기에 메모를 입력해주세요.."></textarea>
-                <button type="submit" class="button-green">메모 걸기</button>
-            </form>
-        </div>
+  <!-- 상단 네비게이션 -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo"><a href="index.html">HAPPY CHRISTMAS</a></div>
+      <nav class="nav-links">
+        <a href="index.html">메인</a>
+        <a href="letter.html">편지 보내기</a>
+        <a href="tree-decorator.html" class="active">트리 꾸미기</a>
+        <a href="minigame.html">미니게임</a>
+      </nav>
     </div>
-    
-    <!-- 메모 보기 모달 -->
-    <div id="view-modal" class="modal">
-        <div class="modal-content">
-            <span id="close-view-modal" class="close-button">&times;</span>
-            <h2>작성한 메모 보기</h2>
-            <p id="view-memo-text"></p>
+  </header>
+
+  <main class="tree-main">
+    <h1>우리만의 크리스마스 트리를 꾸며보세요</h1>
+
+    <section class="decorator-container">
+      <!-- 1. 장식 팔레트 -->
+      <aside class="ornament-palette">
+        <h2>장식 목록</h2>
+
+        <div class="ornaments-list">
+          <!-- 종 -->
+          <div
+            class="ornament ornament-bell"
+            draggable="true"
+            data-type="ornament-bell"
+            title="종 장식"
+          ></div>
+
+          <!-- 쿠키 -->
+          <div
+            class="ornament ornament-cookie"
+            draggable="true"
+            data-type="ornament-cookie"
+            title="쿠키 장식"
+          ></div>
+
+          <!-- 초록 선물 상자 -->
+          <div
+            class="ornament ornament-green-box"
+            draggable="true"
+            data-type="ornament-green-box"
+            title="초록 선물 상자"
+          ></div>
+
+          <!-- 빨간 공 -->
+          <div
+            class="ornament ornament-red-ball"
+            draggable="true"
+            data-type="ornament-red-ball"
+            title="빨간 공"
+          ></div>
+
+          <!-- 빨간 선물 상자 -->
+          <div
+            class="ornament ornament-red-box"
+            draggable="true"
+            data-type="ornament-red-box"
+            title="빨간 선물 상자"
+          ></div>
+
+          <!-- 리본 -->
+          <div
+            class="ornament ornament-ribbon"
+            draggable="true"
+            data-type="ornament-ribbon"
+            title="리본 장식"
+          ></div>
+
+          <!-- 눈송이 -->
+          <div
+            class="ornament ornament-snow"
+            draggable="true"
+            data-type="ornament-snow"
+            title="눈송이 장식"
+          ></div>
+
+          <!-- 별 -->
+          <div
+            class="ornament ornament-star"
+            draggable="true"
+            data-type="ornament-star"
+            title="별 장식"
+          ></div>
+
+          <!-- 스틱 -->
+          <div
+            class="ornament ornament-stick"
+            draggable="true"
+            data-type="ornament-stick"
+            title="스틱 장식"
+          ></div>
         </div>
+
+        <button id="reset-button" class="button-red" style="margin-top: 20px;">
+          모두 지우기
+        </button>
+      </aside>
+
+      <!-- 2. 트리 영역 -->
+      <section id="tree-area" class="tree-area">
+        <div class="main-tree"></div>
+      </section>
+    </section>
+  </main>
+
+  <!-- 메모 입력 모달 -->
+  <div id="input-modal" class="modal">
+    <div class="modal-content">
+      <span id="close-input-modal" class="close-button">&times;</span>
+      <h2>메모 남기기 ✍️</h2>
+      <form id="memo-input-form">
+        <textarea
+          id="input-memo-text"
+          placeholder="트리에 남길 메모를 입력해 주세요."
+        ></textarea>
+        <button type="submit" class="button-green">메모 저장</button>
+      </form>
     </div>
+  </div>
 
-    <audio id="christmas-carol" src="assets/audio/carol.mp3" loop></audio> 
-    <button id="music-toggle" class="music-toggle-button">음악</button>
+  <!-- 메모 보기 모달 -->
+  <div id="view-modal" class="modal">
+    <div class="modal-content">
+      <span id="close-view-modal" class="close-button">&times;</span>
+      <h2>장식에 담긴 메모</h2>
+      <p id="view-memo-text"></p>
+    </div>
+  </div>
 
-    <button id="snow-toggle">❄️</button> 
+  <!-- 음악 & 눈 효과 버튼 -->
+  <audio id="christmas-carol" src="assets/audio/carol.mp3" loop></audio>
+  <button id="music-toggle" class="music-toggle-button">음악</button>
+  <button id="snow-toggle">❄️</button>
 
-    <!-- Firebase (Firestore) for shared memos -->
-    <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore-compat.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBaT3IuQJ9EAWS5Xg5Fr5GkehCNKuCq1To",
-            authDomain: "christmastree-dccfb.firebaseapp.com",
-            projectId: "christmastree-dccfb",
-            storageBucket: "christmastree-dccfb.appspot.com",
-            messagingSenderId: "532924420650",
-            appId: "1:532924420650:web:12d6c7e0dd417018a46953"
-        };
+  <!-- Firebase (트리 장식 공유용) -->
+  <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBaT3IuQJ9EAWS5Xg5Fr5GkehCNKuCq1To",
+      authDomain: "christmastree-dccfb.firebaseapp.com",
+      projectId: "christmastree-dccfb",
+      storageBucket: "christmastree-dccfb.appspot.com",
+      messagingSenderId: "532924420650",
+      appId: "1:532924420650:web:12d6c7e0dd417018a46953",
+    };
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        window.db = firebase.firestore();
-        window.firestoreTimestamp = firebase.firestore.FieldValue.serverTimestamp;
-    </script>
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
 
-    <script src="js/tree.js"></script>
-    <script src="js/script.js"></script>
+    window.db = firebase.firestore();
+    window.firestoreTimestamp = firebase.firestore.FieldValue.serverTimestamp;
+  </script>
+
+  <!-- 공통 스크립트 + 트리 스크립트 -->
+  <script src="js/script.js"></script>
+  <script src="js/tree-decorator.js"></script>
 </body>
 </html>
