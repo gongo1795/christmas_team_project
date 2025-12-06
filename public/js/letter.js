@@ -5,17 +5,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('letter-form');
     const feedback = document.getElementById('feedback');
 
+    // 테마 및 색상 값 전송을 위한 숨겨진 입력 필드
     const themeInput = document.getElementById('theme_name');
+    const backgroundColorInput = document.getElementById('backgroundColor');
+    const textColorInput = document.getElementById('textColor');
 
-    // --- 테마 선택 로직 ---
+    // 테마별 색상 코드 매핑
+    const themeColors = {
+        'theme-parchment': { bg: '#FDF5E6', text: '#5D4037' },
+        'theme-chocolate': { bg: '#5D4037', text: '#F5EFE6' },
+        'theme-white': { bg: '#FFFFFF', text: '#000000' }
+    };
+
+    // --- 테마 및 색상 설정 로직 ---
     const themes = ['theme-parchment', 'theme-chocolate', 'theme-white'];
+
+    function updateTheme(newTheme) {
+        // UI 클래스 변경
+        letterContainer.classList.remove(...themes);
+        letterContainer.classList.add(newTheme);
+
+        // 활성 버튼 표시
+        themeButtons.forEach(button => button.classList.remove('active'));
+        document.querySelector(`.theme-button[data-theme="${newTheme}"]`).classList.add('active');
+
+        // 숨겨진 필드 값 설정
+        themeInput.value = newTheme;
+        const colors = themeColors[newTheme];
+        if (colors) {
+            backgroundColorInput.value = colors.bg;
+            textColorInput.value = colors.text;
+        }
+    }
 
     // 기본 테마 설정
     function setDefaultTheme() {
-        const defaultTheme = 'theme-parchment';
-        letterContainer.classList.add(defaultTheme);
-        document.querySelector(`.theme-button[data-theme="${defaultTheme}"]`).classList.add('active');
-        themeInput.value = defaultTheme; // 숨겨진 필드에 기본값 설정
+        updateTheme('theme-parchment');
     }
 
     themeSelector.addEventListener('click', (e) => {
@@ -23,19 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!clickedButton) return;
 
         const newTheme = clickedButton.dataset.theme;
-
-        // 모든 버튼에서 active 클래스 제거
-        themeButtons.forEach(button => button.classList.remove('active'));
-        // 클릭된 버튼에 active 클래스 추가
-        clickedButton.classList.add('active');
-
-        // 컨테이너에서 모든 테마 클래스 제거
-        letterContainer.classList.remove(...themes);
-        // 새로운 테마 클래스 추가
-        letterContainer.classList.add(newTheme);
-
-        // 숨겨진 필드에 새로운 테마 값 설정
-        themeInput.value = newTheme;
+        updateTheme(newTheme);
     });
 
     setDefaultTheme();
@@ -56,9 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         emailjs.sendForm('service_obt6ibv', 'template_7ilulin', form)
             .then(function() {
-                feedback.textContent = '🎉 편지가 성공적으로 산타에게 전달되었습니다! 🎉';
+                feedback.textContent = '🎉 편지가 성공적으로 전달되었습니다! 🎉';
                 feedback.className = 'feedback-message feedback-success';
-                form.reset();
+                form.reset(); // 폼 필드 초기화
+                setDefaultTheme(); // 테마를 기본값으로 다시 설정
             }, function(error) {
                 console.log('전송 실패:', error);
                 feedback.textContent = '❌ 편지 전송에 실패했습니다. (콘솔 확인 요망)';
