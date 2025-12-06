@@ -91,3 +91,11 @@ textarea {
 .feedback-error {
     color: var(--color-red-christmas);
 }
+
+/* 편지 카드 안의 모든 글꼴을 Hahmlet으로 통일 */
+.letter-container,
+.letter-container * {
+    font-family: var(--font-hahmlet);
+}
+
+
