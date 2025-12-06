@@ -2,86 +2,163 @@
 
 .letter-main {
     display: flex;
-    justify-content: center;
+    justify-content: center; /* 편지지와 테마 선택기 그룹을 중앙에 정렬 */
+    align-items: flex-start; /* 그룹 내 아이템들을 상단에 정렬 */
     padding: 40px 20px;
-    background-color: var(--color-dark-brown-background); /* 다른 페이지와 동일한 변수 사용 */
+    background-color: var(--color-dark-brown-background);
 }
 
 .letter-container {
     width: 100%;
     max-width: 700px;
-    background-color: #FFF;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px #2C1D1D; /* 입체감 */
-    border: 3px solid var(--color-red-christmas); /* 크리스마스 테두리 */
+    padding: 40px 50px;
+    border-radius: 5px;
+    transition: background 0.3s, border 0.3s, box-shadow 0.3s; /* 부드러운 전환 효과 */
 }
 
-/* h1 스타일: 한글은 Hahmlet으로 통일 */
+/* --- 테마 선택 UI 스타일 --- */
+.theme-selector {
+    display: flex;
+    flex-direction: column; /* 버튼을 세로로 정렬 */
+    /* align-items: center;  letter-main에서 제어 */
+    gap: 15px; /* 버튼 간 세로 간격 */
+    margin-right: 20px; /* 편지지 컨테이너와의 간격 */
+    padding-top: 40px; /* letter-container의 padding-top과 맞춤 */
+}
+
+.theme-button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.theme-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.theme-button.active {
+    border-color: var(--color-gold);
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* 테마별 버튼 색상 */
+.theme-button[data-theme="theme-parchment"] { background: #fdf5e6; }
+.theme-button[data-theme="theme-chocolate"] { background: #5D4037; }
+.theme-button[data-theme="theme-white"] { background: #fafafa; }
+
+
+/* --- 편지지 테마 스타일 --- */
+.theme-parchment {
+    background: linear-gradient(to bottom, #fdf5e6 0%, #ece1d0 100%); /* 종이 질감 그라데이션 */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1), 0 10px 30px rgba(0, 0, 0, 0.15); /* 더 부드럽고 깊은 그림자 */
+    border: 1px solid rgba(210, 200, 184, 0.7); /* 좀 더 부드러운 테두리 */
+}
+
+
+.theme-chocolate {
+    background-color: #5D4037; /* 진한 초콜릿 색 */
+    border: 1px solid #795548; /* 약간 더 밝은 테두리 */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 초콜릿 테마 내부 텍스트 및 입력 요소 색상 조정 */
+.theme-chocolate h1,
+.theme-chocolate .subtitle {
+    color: #F5EFE6; /* 부드러운 크림색 */
+}
+
+.theme-chocolate input[type="text"],
+.theme-chocolate input[type="email"],
+.theme-chocolate textarea {
+    color: #F5EFE6; /* 부드러운 크림색 */
+    border-bottom-color: #A1887F; /* 톤 다운된 밑줄 */
+}
+
+.theme-chocolate input:focus, 
+.theme-chocolate textarea:focus {
+    border-bottom-color: #D7CCC8; /* 포커스 시 밝은 색 */
+}
+
+.theme-chocolate ::placeholder {
+    color: #BCAAA4; /* 플레이스홀더 색상 */
+}
+
+.theme-white {
+    background-color: #fafafa;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 .letter-container h1 {
     text-align: center;
     color: var(--color-black-text);
     margin-bottom: 10px;
-
-    /* 한글 폰트 통일 */
-    font-family: var(--font-hahmlet);  /* 또는 var(--font-primary); */
+    font-family: var(--font-hahmlet);
     font-weight: 700;
 }
-
 
 .subtitle {
     text-align: center;
     color: var(--color-green-christmas);
-    margin-bottom: 30px;
+    margin-bottom: 40px;
     font-style: italic;
 }
 
-/* 폼 스타일 */
 .form-group {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: var(--color-black-text);
+    margin-bottom: 25px;
 }
 
 input[type="text"], input[type="email"], textarea {
     width: 100%;
-    padding: 12px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    font-size: 1em;
+    border: none;
+    background-color: transparent;
+    border-bottom: 2px solid #d2b48c; /* 밑줄 스타일 */
+    padding: 10px 5px;
+    font-family: 'Nanum Pen Script', cursive; /* 손글씨 폰트 */
+    font-size: 1.8rem; /* 폰트 크기 증가 */
+    color: #3a3a3a;
     transition: border-color 0.3s;
-    background-color: #fff;
-    /* Hahmlet 폰트가 적용되도록 font-family를 지정하지 않습니다.
-       (style.css의 body/--font-primary를 따릅니다.) */
 }
 
 input:focus, textarea:focus {
-    border-color: var(--color-red-christmas); /* 포커스 시 빨간색 */
+    border-color: var(--color-red-christmas);
     outline: none;
-    box-shadow: 0 0 5px rgba(192, 57, 43, 0.5);
+    box-shadow: none;
 }
 
 textarea {
     resize: vertical;
+    line-height: 1.8; /* 줄 간격 조정 */
+    min-height: 200px;
+}
+
+/* Placeholder 스타일 */
+::placeholder {
+    color: #a0937d;
+    font-family: 'Nanum Pen Script', cursive;
+    font-size: 1.8rem;
 }
 
 .letter-container .button-red {
     width: 100%;
     padding: 15px;
-    font-size: 1.1em;
-    margin-top: 15px;
+    font-size: 1.2em;
+    margin-top: 20px;
+    font-family: var(--font-hahmlet); /* 버튼은 가독성 좋은 폰트 유지 */
 }
 
-/* 피드백 메시지 */
 .feedback-message {
     text-align: center;
     margin-top: 20px;
     font-weight: bold;
+    font-family: var(--font-hahmlet);
+    font-size: 1.1rem;
 }
 
 .feedback-success {
@@ -91,11 +168,3 @@ textarea {
 .feedback-error {
     color: var(--color-red-christmas);
 }
-
-/* 편지 카드 안의 모든 글꼴을 Hahmlet으로 통일 */
-.letter-container,
-.letter-container * {
-    font-family: var(--font-hahmlet);
-}
-
-
