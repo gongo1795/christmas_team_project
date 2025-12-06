@@ -37,21 +37,17 @@
 
         <div class="decorator-container">
             <!-- 왼쪽: 장식 팔레트 -->
-            <section class="ornament-palette">
-                <h2>장식 목록</h2>
-
-                <div class="ornaments-list">
-                    <!-- data-type 은 Firestore에 저장되는 타입이며, CSS 클래스랑 이름을 똑같이 맞춤 -->
-                    <div class="ornament bell"       data-type="bell"></div>
-                    <div class="ornament cookie"     data-type="cookie"></div>
-                    <div class="ornament green_box"  data-type="green_box"></div>
-                    <div class="ornament red_ball"   data-type="red_ball"></div>
-                    <div class="ornament red_box"    data-type="red_box"></div>
-                    <div class="ornament ribbon"     data-type="ribbon"></div>
-                    <div class="ornament snow"       data-type="snow"></div>
-                    <div class="ornament star"       data-type="star"></div>
-                    <div class="ornament stick"      data-type="stick"></div>
-                </div>
+            <div class="ornaments-list">
+    <div class="ornament bell"      draggable="true" data-type="bell"></div>
+    <div class="ornament cookie"    draggable="true" data-type="cookie"></div>
+    <div class="ornament green_box" draggable="true" data-type="green_box"></div>
+    <div class="ornament red_ball"  draggable="true" data-type="red_ball"></div>
+    <div class="ornament red_box"   draggable="true" data-type="red_box"></div>
+    <div class="ornament ribbon"    draggable="true" data-type="ribbon"></div>
+    <div class="ornament snow"      draggable="true" data-type="snow"></div>
+    <div class="ornament star"      draggable="true" data-type="star"></div>
+    <div class="ornament stick"     draggable="true" data-type="stick"></div>
+</div>
 
                 <button id="reset-button" class="button-red" style="margin-top: 30px;">
                     모두 지우기
