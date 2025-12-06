@@ -37,19 +37,22 @@
 
         <div class="decorator-container">
             <!-- 왼쪽: 장식 팔레트 -->
-            <div class="ornaments-list">
-    <div class="ornament bell"      draggable="true" data-type="bell"></div>
-    <div class="ornament cookie"    draggable="true" data-type="cookie"></div>
-    <div class="ornament green_box" draggable="true" data-type="green_box"></div>
-    <div class="ornament red_ball"  draggable="true" data-type="red_ball"></div>
-    <div class="ornament red_box"   draggable="true" data-type="red_box"></div>
-    <div class="ornament ribbon"    draggable="true" data-type="ribbon"></div>
-    <div class="ornament snow"      draggable="true" data-type="snow"></div>
-    <div class="ornament star"      draggable="true" data-type="star"></div>
-    <div class="ornament stick"     draggable="true" data-type="stick"></div>
-</div>
+            <section class="ornament-palette">
+                <h2>장식 목록</h2>
 
-                <button id="reset-button" class="button-red" style="margin-top: 30px;">
+                <div class="ornaments-list">
+                    <div class="ornament bell"      draggable="true" data-type="bell"></div>
+                    <div class="ornament cookie"    draggable="true" data-type="cookie"></div>
+                    <div class="ornament green_box" draggable="true" data-type="green_box"></div>
+                    <div class="ornament red_ball"  draggable="true" data-type="red_ball"></div>
+                    <div class="ornament red_box"   draggable="true" data-type="red_box"></div>
+                    <div class="ornament ribbon"    draggable="true" data-type="ribbon"></div>
+                    <div class="ornament snow"      draggable="true" data-type="snow"></div>
+                    <div class="ornament star"      draggable="true" data-type="star"></div>
+                    <div class="ornament stick"     draggable="true" data-type="stick"></div>
+                </div>
+
+                <button id="reset-button" class="button-red" style="margin-top: 20px;">
                     모두 지우기
                 </button>
             </section>
@@ -110,7 +113,6 @@
             firebase.initializeApp(firebaseConfig);
         }
 
-        // 트리 JS에서 쓰는 전역 객체
         window.db = firebase.firestore();
         window.firestoreTimestamp = firebase.firestore.FieldValue.serverTimestamp;
     </script>
