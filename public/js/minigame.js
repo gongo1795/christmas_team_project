@@ -191,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const snapshot = await window.db
                     .collection('falling-gifts-scores')
                     .orderBy('score', 'desc')
-                    .orderBy('createdAt', 'asc')
                     .limit(10)
                     .get();
 
