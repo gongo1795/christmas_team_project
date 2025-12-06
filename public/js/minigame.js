@@ -17,7 +17,7 @@ const GIFT_IMAGE_SOURCES = [
 ];
 
 const fallingGiftImgs = [];
-GIFT_IMAGE_SOURCES.forEach(src => {
+GIFT_IMAGE_SOURCES.forEach((src) => {
     const img = new Image();
     img.src = src;
     fallingGiftImgs.push(img);
@@ -58,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </p>
         `;
 
-
         switch (gameType) {
             case 'falling-gifts':
                 currentCleanup = loadFallingGiftsGame(gameArea);
@@ -76,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===================================================================
     // 1. 선물 잡기 게임 (FALLING GIFTS)
-    //    - 난이도 조정 + 범위 확대 + 하이스코어 + 리셋 버튼
+    //    - 난이도 조정 + 범위 확대 + 하이스코어 + 랭킹(localStorage)
     // ===================================================================
     function loadFallingGiftsGame(gameArea) {
         // 난이도 설정 (난이도 상향 + 범위 넓힘)
@@ -87,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 spawnInterval: 1300,
                 speedMin: 1.4,
                 speedMax: 2.1,
-                spawnRange: 320,   // 범위 넓힘
+                spawnRange: 320,
             },
             // 새 보통 = 기존 어려움보다 약간 더 빡셈
             normal: {
@@ -95,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 spawnInterval: 950,
                 speedMin: 1.8,
                 speedMax: 2.7,
-                spawnRange: 420,   // 훨씬 넓게
+                spawnRange: 420,
             },
             // 새 어려움 = 하드코어 모드
             hard: {
@@ -103,11 +102,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 spawnInterval: 700,
                 speedMin: 2.2,
                 speedMax: 3.2,
-                spawnRange: 540,   // 거의 화면 전체
+                spawnRange: 540,
             },
         };
         let currentDifficulty = 'normal';
 
+        // 화면 구성
         gameArea.innerHTML = `
             <div id="game-controls" style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:10px;">
                 <div style="display:flex; align-items:center; gap:8px;">
@@ -155,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('bestScore_fallingGifts');
             bestScoreDisplay.textContent = '최고 점수: 0';
         });
+
         // ===== 🎄 선물 잡기 랭킹 영역 생성 =====
         const rankingSection = document.createElement('section');
         rankingSection.id = 'fallingRanking';
@@ -166,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button id="refreshFallingRanking" class="button-green">랭킹 새로고침</button>
             </div>
             <ol id="fallingRankingList" class="ranking-list">
-                <li>불러오는 중...</li>
+                <li>아직 등록된 점수가 없어요.</li>
             </ol>
         `;
         gameArea.appendChild(rankingSection);
@@ -174,88 +175,92 @@ document.addEventListener('DOMContentLoaded', () => {
         const rankingListEl = rankingSection.querySelector('#fallingRankingList');
         const refreshRankingBtn = rankingSection.querySelector('#refreshFallingRanking');
 
-        function ensureDbForRanking() {
-            if (!window.db) {
-                rankingListEl.innerHTML = '<li>Firebase 설정이 없어 랭킹 기능을 사용할 수 없어요.</li>';
-                return false;
-            }
-            return true;
-        }
+        // ===== 🔁 브라우저 localStorage 기반 랭킹 =====
+        const RANKING_STORAGE_KEY = 'fallingGiftsRanking';
 
-        // 🔽 Firestore에서 상위 10명 랭킹 읽어오기
-        async function loadFallingRanking() {
-            if (!ensureDbForRanking()) return;
-            rankingListEl.innerHTML = '<li>불러오는 중...</li>';
-
+        function loadRankingFromStorage() {
             try {
-                const snapshot = await window.db
-                    .collection('falling-gifts-scores')
-                    .orderBy('score', 'desc')
-                    .limit(10)
-                    .get();
-
-                if (snapshot.empty) {
-                    rankingListEl.innerHTML = '<li>아직 등록된 점수가 없어요.</li>';
-                    return;
-                }
-
-                let rank = 1;
-                const items = [];
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const rawNickname = (data.nickname || '익명').toString();
-                    const safeNickname = rawNickname.replace(/[<>]/g, '');
-                    const difficultyLabel = data.difficulty || '기본';
-
-                    items.push(
-                        `<li><strong>${rank}위</strong> ${safeNickname} — ${data.score}점 (${difficultyLabel})</li>`
-                    );
-                    rank++;
-                });
-
-                rankingListEl.innerHTML = items.join('');
-            } catch (error) {
-                console.error('랭킹 불러오기 오류', error);
-                rankingListEl.innerHTML = '<li>랭킹을 불러오는 중 오류가 발생했어요.</li>';
+                const raw = localStorage.getItem(RANKING_STORAGE_KEY);
+                if (!raw) return [];
+                const parsed = JSON.parse(raw);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                console.error('랭킹 불러오기(JSON 파싱) 오류', e);
+                return [];
             }
         }
 
-        // 🔽 게임 끝난 점수 Firestore에 저장
-        async function saveFallingScoreToRanking(scoreToSave) {
-            if (!ensureDbForRanking()) return;
+        function saveRankingToStorage(list) {
+            try {
+                localStorage.setItem(RANKING_STORAGE_KEY, JSON.stringify(list));
+            } catch (e) {
+                console.error('랭킹 저장(localStorage) 오류', e);
+            }
+        }
+
+        function renderRanking() {
+            const list = loadRankingFromStorage();
+
+            if (!list.length) {
+                rankingListEl.innerHTML = '<li>아직 등록된 점수가 없어요.</li>';
+                return;
+            }
+
+            // 점수 내림차순, 같으면 등록 시간 오래된 순
+            const sorted = list
+                .slice()
+                .sort((a, b) => {
+                    if (b.score !== a.score) return b.score - a.score;
+                    return (a.timestamp || 0) - (b.timestamp || 0);
+                })
+                .slice(0, 10);
+
+            const items = sorted.map((item, index) => {
+                const safeNickname = (item.nickname || '익명')
+                    .toString()
+                    .replace(/[<>]/g, '');
+                const difficultyLabel = item.difficulty || '기본';
+                return `<li><strong>${index + 1}위</strong> ${safeNickname} — ${item.score}점 (${difficultyLabel})</li>`;
+            });
+
+            rankingListEl.innerHTML = items.join('');
+        }
+
+        function saveScoreToLocalRanking(scoreToSave) {
             if (scoreToSave <= 0) return;
 
             const storedNickname = localStorage.getItem('fallingNickname') || '';
 
             if (!confirm('이번 점수를 랭킹에 등록할까요?')) return;
-            let nickname = prompt('랭킹에 표시할 닉네임을 입력해주세요 (최대 10자)', storedNickname || '');
+            let nickname = prompt(
+                '랭킹에 표시할 닉네임을 입력해주세요 (최대 10자)',
+                storedNickname || ''
+            );
             if (nickname === null) return;
 
             nickname = nickname.trim().slice(0, 10) || '익명';
             localStorage.setItem('fallingNickname', nickname);
 
-            try {
-                await window.db.collection('falling-gifts-scores').add({
-                    nickname,
-                    score: scoreToSave,
-                    difficulty: currentDifficulty,
-                    createdAt: window.firestoreTimestamp ? window.firestoreTimestamp() : Date.now(),
-                });
-                await loadFallingRanking();
-            } catch (error) {
-                console.error('랭킹 저장 오류', error);
-                alert('랭킹을 저장하는 중 오류가 발생했어요.');
-            }
+            const list = loadRankingFromStorage();
+            list.push({
+                nickname,
+                score: scoreToSave,
+                difficulty: currentDifficulty,
+                timestamp: Date.now(),
+            });
+            saveRankingToStorage(list);
+            renderRanking();
         }
 
         // 버튼으로 랭킹 새로고침
         refreshRankingBtn.addEventListener('click', () => {
-            loadFallingRanking();
+            renderRanking();
         });
 
-        // 페이지에 들어오면 한 번 랭킹 불러오기
-        loadFallingRanking();
+        // 페이지 진입 시 한 번 랭킹 표시
+        renderRanking();
 
+        // 난이도 변경
         diffSelect.addEventListener('change', () => {
             currentDifficulty = diffSelect.value;
         });
@@ -281,17 +286,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     ctx.fillStyle = this.color;
                     ctx.fillRect(this.x, this.y, this.width, this.height);
                 }
-            }
+            },
         };
 
         let gifts = [];
 
         function createGift() {
             const cfg = DIFFICULTY[currentDifficulty];
-            const randomGiftImg = fallingGiftImgs[Math.floor(Math.random() * fallingGiftImgs.length)];
+            const randomGiftImg =
+                fallingGiftImgs[Math.floor(Math.random() * fallingGiftImgs.length)];
             const size = Math.random() * 25 + 30;
 
-            // 🎯 바구니 주변 기준으로, 난이도에 따라 더 넓은 범위에서 생성
+            // 바구니 주변 기준으로, 난이도에 따라 더 넓은 범위에서 생성
             const range = cfg.spawnRange;
             const centerX = player.x + player.width / 2;
             let minX = centerX - range / 2;
@@ -302,7 +308,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (maxX > canvas.width - size) maxX = canvas.width - size;
 
             const xPos = minX + Math.random() * (maxX - minX || 1);
-
             const speed = cfg.speedMin + Math.random() * (cfg.speedMax - cfg.speedMin);
 
             const gift = {
@@ -318,11 +323,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         ctx.fillStyle = this.color;
                         ctx.fillRect(this.x, this.y, this.size, this.size);
-                        ctx.fillStyle = 'white';
-                        ctx.fillRect(this.x + this.size / 2 - 2, this.y, 4, this.size);
-                        ctx.fillRect(this.x, this.y + this.size / 2 - 2, this.size, 4);
                     }
-                }
+                },
             };
             gifts.push(gift);
         }
@@ -344,26 +346,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-              function finishGame() {
+        function finishGame() {
             isGameOver = true;
             if (giftInterval) clearInterval(giftInterval);
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
 
             gameOverMessage.style.display = 'block';
 
-            // 최고 점수 갱신 (내 컴퓨터 기준)
+            // 최고 점수 갱신
             if (score > bestScore) {
                 bestScore = score;
                 localStorage.setItem('bestScore_fallingGifts', String(bestScore));
                 bestScoreDisplay.textContent = `최고 점수: ${bestScore}`;
             }
 
-            // 🔥 이번 점수를 랭킹에 저장 시도
+            // 이번 점수를 랭킹에 저장
             if (score > 0) {
-                saveFallingScoreToRanking(score);
+                saveScoreToLocalRanking(score);
             }
         }
-
 
         function updateGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -541,10 +542,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     ctx.fillStyle = this.color;
                     ctx.beginPath();
-                    ctx.arc(this.x + this.size / 2, this.y + this.size / 2, this.size / 2, 0, Math.PI * 2);
+                    ctx.arc(
+                        this.x + this.size / 2,
+                        this.y + this.size / 2,
+                        this.size / 2,
+                        0,
+                        Math.PI * 2
+                    );
                     ctx.fill();
                 }
-            }
+            },
         };
 
         let santas = [];
@@ -567,7 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ctx.fillStyle = this.color;
                         ctx.fillRect(this.x, this.y, this.size, this.size);
                     }
-                }
+                },
             };
             santas.push(santa);
         }
