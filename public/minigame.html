@@ -65,8 +65,31 @@
     <button id="music-toggle" class="music-toggle-button">음악</button>
      
     <button id="snow-toggle">❄️</button> 
+    <!-- Firebase (미니게임 랭킹용) -->
+    <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBaT3IuQJ9EAWS5Xg5Fr5GkehCNKuCq1To",
+            authDomain: "christmastree-dccfb.firebaseapp.com",
+            projectId: "christmastree-dccfb",
+            storageBucket: "christmastree-dccfb.appspot.com",
+            messagingSenderId: "532924420650",
+            appId: "1:532924420650:web:12d6c7e0dd417018a46953"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        // 다른 js에서 공통으로 쓰기 위해 전역에 저장
+        window.db = firebase.firestore();
+        window.firestoreTimestamp = firebase.firestore.FieldValue.serverTimestamp;
+    </script>
 
     <script src="js/script.js"></script>
     <script src="js/minigame.js"></script>
 </body>
 </html>
+
+

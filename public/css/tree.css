@@ -9,12 +9,13 @@
 
 /* --- Bangers 폰트 크기 조정 (깨짐 방지) --- */
 
-/* 페이지 메인 제목 (h1) */
+/* 페이지 메인 제목 (h1) - 한글은 Hahmlet */
 .tree-main h1 {
-    font-family: var(--font-bangers);
+    font-family: var(--font-hahmlet);  /* 또는 var(--font-primary); */
     font-size: 2.8em; 
     margin-bottom: 5px;
 }
+
 
 /* 장식 목록 제목 (h2) */
 .ornament-palette h2 {

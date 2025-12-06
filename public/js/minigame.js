@@ -155,6 +155,107 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('bestScore_fallingGifts');
             bestScoreDisplay.textContent = '최고 점수: 0';
         });
+        // ===== 🎄 선물 잡기 랭킹 영역 생성 =====
+        const rankingSection = document.createElement('section');
+        rankingSection.id = 'fallingRanking';
+        rankingSection.className = 'ranking-section';
+        rankingSection.innerHTML = `
+            <h3>🎄 선물 잡기 랭킹</h3>
+            <p class="ranking-desc">상위 10명의 점수를 볼 수 있어요.</p>
+            <div class="ranking-controls">
+                <button id="refreshFallingRanking" class="button-green">랭킹 새로고침</button>
+            </div>
+            <ol id="fallingRankingList" class="ranking-list">
+                <li>불러오는 중...</li>
+            </ol>
+        `;
+        gameArea.appendChild(rankingSection);
+
+        const rankingListEl = rankingSection.querySelector('#fallingRankingList');
+        const refreshRankingBtn = rankingSection.querySelector('#refreshFallingRanking');
+
+        function ensureDbForRanking() {
+            if (!window.db) {
+                rankingListEl.innerHTML = '<li>Firebase 설정이 없어 랭킹 기능을 사용할 수 없어요.</li>';
+                return false;
+            }
+            return true;
+        }
+
+        // 🔽 Firestore에서 상위 10명 랭킹 읽어오기
+        async function loadFallingRanking() {
+            if (!ensureDbForRanking()) return;
+            rankingListEl.innerHTML = '<li>불러오는 중...</li>';
+
+            try {
+                const snapshot = await window.db
+                    .collection('falling-gifts-scores')
+                    .orderBy('score', 'desc')
+                    .orderBy('createdAt', 'asc')
+                    .limit(10)
+                    .get();
+
+                if (snapshot.empty) {
+                    rankingListEl.innerHTML = '<li>아직 등록된 점수가 없어요.</li>';
+                    return;
+                }
+
+                let rank = 1;
+                const items = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const rawNickname = (data.nickname || '익명').toString();
+                    const safeNickname = rawNickname.replace(/[<>]/g, '');
+                    const difficultyLabel = data.difficulty || '기본';
+
+                    items.push(
+                        `<li><strong>${rank}위</strong> ${safeNickname} — ${data.score}점 (${difficultyLabel})</li>`
+                    );
+                    rank++;
+                });
+
+                rankingListEl.innerHTML = items.join('');
+            } catch (error) {
+                console.error('랭킹 불러오기 오류', error);
+                rankingListEl.innerHTML = '<li>랭킹을 불러오는 중 오류가 발생했어요.</li>';
+            }
+        }
+
+        // 🔽 게임 끝난 점수 Firestore에 저장
+        async function saveFallingScoreToRanking(scoreToSave) {
+            if (!ensureDbForRanking()) return;
+            if (scoreToSave <= 0) return;
+
+            const storedNickname = localStorage.getItem('fallingNickname') || '';
+
+            if (!confirm('이번 점수를 랭킹에 등록할까요?')) return;
+            let nickname = prompt('랭킹에 표시할 닉네임을 입력해주세요 (최대 10자)', storedNickname || '');
+            if (nickname === null) return;
+
+            nickname = nickname.trim().slice(0, 10) || '익명';
+            localStorage.setItem('fallingNickname', nickname);
+
+            try {
+                await window.db.collection('falling-gifts-scores').add({
+                    nickname,
+                    score: scoreToSave,
+                    difficulty: currentDifficulty,
+                    createdAt: window.firestoreTimestamp ? window.firestoreTimestamp() : Date.now(),
+                });
+                await loadFallingRanking();
+            } catch (error) {
+                console.error('랭킹 저장 오류', error);
+                alert('랭킹을 저장하는 중 오류가 발생했어요.');
+            }
+        }
+
+        // 버튼으로 랭킹 새로고침
+        refreshRankingBtn.addEventListener('click', () => {
+            loadFallingRanking();
+        });
+
+        // 페이지에 들어오면 한 번 랭킹 불러오기
+        loadFallingRanking();
 
         diffSelect.addEventListener('change', () => {
             currentDifficulty = diffSelect.value;
@@ -244,20 +345,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        function finishGame() {
+              function finishGame() {
             isGameOver = true;
             if (giftInterval) clearInterval(giftInterval);
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
 
             gameOverMessage.style.display = 'block';
 
-            // 최고 점수 갱신
+            // 최고 점수 갱신 (내 컴퓨터 기준)
             if (score > bestScore) {
                 bestScore = score;
                 localStorage.setItem('bestScore_fallingGifts', String(bestScore));
                 bestScoreDisplay.textContent = `최고 점수: ${bestScore}`;
             }
+
+            // 🔥 이번 점수를 랭킹에 저장 시도
+            if (score > 0) {
+                saveFallingScoreToRanking(score);
+            }
         }
+
 
         function updateGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
