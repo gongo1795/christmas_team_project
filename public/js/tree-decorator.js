@@ -3,6 +3,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const treeArea = document.getElementById('tree-area');
     const resetButton = document.getElementById('reset-button');
+    const trashBin = document.getElementById('trash-bin');
 
     const inputModal = document.getElementById('input-modal');
     const viewModal = document.getElementById('view-modal');
@@ -29,6 +30,33 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
+    function renderBaseTreeArea() {
+        treeArea.innerHTML = '<div class="main-tree"></div>';
+        if (trashBin) {
+            treeArea.appendChild(trashBin);
+        }
+    }
+
+    function isPointerInTrash(clientX, clientY) {
+        if (!trashBin) return false;
+        const rect = trashBin.getBoundingClientRect();
+        return (
+            clientX >= rect.left &&
+            clientX <= rect.right &&
+            clientY >= rect.top &&
+            clientY <= rect.bottom
+        );
+    }
+
+    function setTrashHighlight(isOver) {
+        if (!trashBin) return;
+        if (isOver) {
+            trashBin.classList.add('drag-over');
+        } else {
+            trashBin.classList.remove('drag-over');
+        }
+    }
+
     // -----------------------------
     // 장식 DOM 생성 & 드래그(위치 이동)
     // -----------------------------
@@ -41,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.memo) {
             ornament.setAttribute('data-memo', data.memo);
             ornament.addEventListener('click', () => {
+                if (ornament.dataset.movedRecently === '1') return;
                 viewMemoText.textContent = data.memo;
                 viewModal.style.display = 'block';
             });
@@ -53,14 +82,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function addDragListeners(ornament, docId) {
         let isDragging = false;
         let offset = { x: 0, y: 0 };
+        let isOverTrash = false;
+        let moved = false;
+        let startPoint = { x: 0, y: 0 };
 
         ornament.addEventListener('mousedown', (e) => {
             e.preventDefault();
             isDragging = true;
+            moved = false;
 
             const rect = ornament.getBoundingClientRect();
             offset.x = e.clientX - rect.left;
             offset.y = e.clientY - rect.top;
+            startPoint = { x: e.clientX, y: e.clientY };
 
             ornament.style.cursor = 'grabbing';
             ornament.style.transition = 'none';
@@ -81,13 +115,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
             ornament.style.left = `${newLeftPercent}%`;
             ornament.style.top = `${newTopPercent}%`;
+
+            const nowOverTrash = isPointerInTrash(e.clientX, e.clientY);
+            if (nowOverTrash !== isOverTrash) {
+                isOverTrash = nowOverTrash;
+                setTrashHighlight(isOverTrash);
+            }
+
+            if (!moved) {
+                const dx = e.clientX - startPoint.x;
+                const dy = e.clientY - startPoint.y;
+                if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+                    moved = true;
+                }
+            }
         });
 
-        document.addEventListener('mouseup', async () => {
+        document.addEventListener('mouseup', async (e) => {
             if (!isDragging) return;
             isDragging = false;
             ornament.style.cursor = 'grab';
             ornament.style.transition = '';
+            setTrashHighlight(false);
+            isOverTrash = false;
+
+            if (moved) {
+                ornament.dataset.movedRecently = '1';
+                setTimeout(() => {
+                    delete ornament.dataset.movedRecently;
+                }, 0);
+            }
+
+            if (isPointerInTrash(e.clientX, e.clientY)) {
+                if (!ensureDb()) return;
+                try {
+                    await ornamentsCollection().doc(docId).delete();
+                    ornament.remove();
+                } catch (error) {
+                    console.error('Failed to delete ornament', error);
+                    alert('삭제 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                }
+                return;
+            }
 
             const left = ornament.style.left;
             const top = ornament.style.top;
@@ -198,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const batch = window.db.batch();
             snapshot.forEach((doc) => batch.delete(doc.ref));
             await batch.commit();
-            treeArea.innerHTML = '<div class="main-tree"></div>';
+            renderBaseTreeArea();
             currentZIndex = 10;
             alert('트리가 초기화되었습니다.');
         } catch (error) {
@@ -218,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .orderBy('createdAt')
             .onSnapshot(
                 (snapshot) => {
-                    treeArea.innerHTML = '<div class="main-tree"></div>';
+                    renderBaseTreeArea();
                     let maxZ = 10;
 
                     snapshot.forEach((doc) => {

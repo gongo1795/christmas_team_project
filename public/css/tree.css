@@ -141,6 +141,30 @@
     background-repeat: no-repeat;
 }
 
+.trash-bin {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    width: 72px;
+    height: 72px;
+    border: 2px dashed rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #333;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, border-color 0.2s, background-color 0.2s;
+}
+
+.trash-bin.drag-over {
+    border-color: var(--color-red-christmas);
+    background: rgba(255, 245, 245, 0.9);
+    transform: scale(1.05);
+}
+
 /* 초록색 트리 모양 (장식들이 올라가는 부분) */
 .main-tree {
     position: absolute;
