@@ -213,18 +213,21 @@
     }
     
     /* 2. 트리 영역 */
-    .tree-area {
-        flex: none; /* Flex 속성 해제 (선택적이지만 명확하게) */
-        
-        /* 🚨 문제 해결 핵심: 너비를 100%로 강제 지정 */
-        width: 100%; 
-        
-        height: 400px; /* 모바일에서 높이 줄이기 (이전 수정안 유지) */
-        order: 1; /* 순서 변경 */
-    }
-    
-    /* 기타 스타일 유지 */
-    .tree-main h1 {
-        font-size: 2em; 
-    }
+  /* 트리가 들어가는 큰 흰색 배경 영역 */
+.tree-area {
+    flex: 1;
+    position: relative;
+    height: 600px;
+    border: 3px solid var(--color-red-christmas); /* 빨간 테두리 */
+    border-radius: 10px;
+    overflow: hidden;
+
+    /* 여기부터가 변경된 부분 (흰 배경 → 이미지) */
+    background-color: #eee; /* 혹시 이미지를 못 불러올 때 대비용 */
+    background-image: url('../assets/images/tree_bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 }
