@@ -128,10 +128,7 @@
     flex: 1;
     min-width: 0;
     position: relative;
-
-    /* ❗고정 height 대신 반응형 높이 사용 */
-    min-height: 320px;
-    height: min(60vh, 600px); /* 화면 높이의 60%와 600px 중 더 작은 값 */
+    height: 600px;
 
     border: 3px solid var(--color-red-christmas);
     border-radius: 10px;
