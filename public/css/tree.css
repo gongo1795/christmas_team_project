@@ -19,7 +19,7 @@
 
 /* 장식 목록 제목 */
 .ornament-palette h2 {
-    font-family: var(--font-bangers);
+    font-family: var(--font-hahmlet);
     font-size: 1.6em;
     color: var(--color-black-text);
     border-bottom: 2px dashed var(--color-green-christmas);
