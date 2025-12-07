@@ -167,17 +167,24 @@ body.home-page .feature-cards .card:nth-child(3) { animation-delay: 0.65s; }
 
 .card h2 {
     color: var(--color-green-christmas);
-    border-bottom: 2px dashed var(--color-red-christmas);
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-
-    /* 🔽 세 카드의 줄선 높이를 맞추기 위한 추가 설정 */
-    display: flex;
-    align-items: flex-end;   /* 텍스트를 h2 박스의 아래쪽에 붙이기 */
-    justify-content: center; /* 가운데 정렬 */
+    font-size: 1.6rem;
     text-align: center;
-    min-height: 3.5em;       /* 제목 박스 높이 통일 (필요하면 3~3.5em 사이로 조절해도 됨) */
+    margin-top: 10px;
+
+    /* 높이 통일 (제목 줄 수 달라도 정렬 유지됨) */
+    min-height: 3.4em; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+.separator {
+    width: 80%;
+    height: 2px;
+    border-bottom: 2px dashed var(--color-red-christmas);
+    margin: 12px auto 20px auto; /* 위·아래 간격 균형 */
+}
+
 
 
 /* 화면 미디어쿼리 추가: 모바일(768px 이하) */
