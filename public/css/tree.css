@@ -141,6 +141,17 @@
     background-repeat: no-repeat;
 }
 
+.tree-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 65%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;  /* 트리 이미지 클릭 불가능 → 장식 드래그 그대로 됨 */
+    z-index: 1;
+}
+
+
 
 .trash-bin {
     position: absolute;
@@ -274,6 +285,8 @@
     border-radius: 5px;
     border: 1px dashed #ccc;
 }
+
+
 
 /* ======================
    4. 반응형
