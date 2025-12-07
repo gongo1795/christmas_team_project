@@ -128,7 +128,10 @@
     flex: 1;
     min-width: 0;
     position: relative;
-    height: 600px;
+
+    /* ❗고정 height 대신 반응형 높이 사용 */
+    min-height: 320px;
+    height: min(60vh, 600px); /* 화면 높이의 60%와 600px 중 더 작은 값 */
 
     border: 3px solid var(--color-red-christmas);
     border-radius: 10px;
@@ -140,6 +143,7 @@
     background-position: center;
     background-repeat: no-repeat;
 }
+
 
 .trash-bin {
     position: absolute;
@@ -292,7 +296,10 @@
 
     .tree-area {
         order: 1;
-        height: 500px;
+
+        /* ❗모바일에서도 고정 500px 대신 화면 기준으로 */
+        min-height: 320px;
+        height: min(60vh, 500px);
     }
 
     .ornament {
@@ -305,3 +312,4 @@
         height: 60px;
     }
 }
+
