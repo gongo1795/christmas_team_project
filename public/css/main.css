@@ -172,7 +172,7 @@ body.home-page .feature-cards .card:nth-child(3) { animation-delay: 0.65s; }
     margin-top: 10px;
 
     /* 높이 통일 (제목 줄 수 달라도 정렬 유지됨) */
-    min-height: 3.4em; 
+    min-height: 3.2em; 
     display: flex;
     align-items: center;
     justify-content: center;
