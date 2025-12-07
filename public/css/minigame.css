@@ -214,19 +214,3 @@
     margin-bottom: 4px;
 }
 
-.button-green {
-    background-color: #2e7d32;
-    color: #fff;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.85rem;
-}
-
-.button-green:hover {
-    opacity: 0.9;
-}
-
-
-
