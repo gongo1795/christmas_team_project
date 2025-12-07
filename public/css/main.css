@@ -170,7 +170,15 @@ body.home-page .feature-cards .card:nth-child(3) { animation-delay: 0.65s; }
     border-bottom: 2px dashed var(--color-red-christmas);
     padding-bottom: 15px;
     margin-bottom: 15px;
+
+    /* 🔽 세 카드의 줄선 높이를 맞추기 위한 추가 설정 */
+    display: flex;
+    align-items: flex-end;   /* 텍스트를 h2 박스의 아래쪽에 붙이기 */
+    justify-content: center; /* 가운데 정렬 */
+    text-align: center;
+    min-height: 3.2em;       /* 제목 박스 높이 통일 (필요하면 3~3.5em 사이로 조절해도 됨) */
 }
+
 
 /* 화면 미디어쿼리 추가: 모바일(768px 이하) */
 @media (max-width: 768px) {
