@@ -31,11 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderBaseTreeArea() {
-        treeArea.innerHTML = '<div class="main-tree"></div>';
-        if (trashBin) {
-            treeArea.appendChild(trashBin);
-        }
+    // 트리 영역 안에 이미 있는 장식들만 제거 (트리 이미지/휴지통은 그대로 둠)
+    const ornaments = treeArea.querySelectorAll('.ornament');
+    ornaments.forEach((o) => o.remove());
     }
+
 
     function isPointerInTrash(clientX, clientY) {
         if (!trashBin) return false;
